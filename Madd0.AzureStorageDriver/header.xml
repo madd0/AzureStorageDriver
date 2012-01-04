@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<DataContextDriver>
+   <MainAssembly>Madd0.AzureStorageDriver.dll</MainAssembly>
+   <SupportUri>https://github.com/madd0/AzureStorageDriver</SupportUri>
+</DataContextDriver>

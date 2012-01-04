@@ -1,0 +1,13 @@
+# User Configuration #
+######################
+*.suo
+*.user
+
+# Compile Output #
+##################
+*/bin/*
+*/obj/*
+
+# OS generated files #
+######################
+Thumbs.db
