@@ -118,9 +118,12 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AuthorName" xml:space="preserve">
-    <value>Mauricio DIAZ ORLICH (github@madd0.com)</value>
+    <value>Mauricio Diaz Orlich</value>
   </data>
   <data name="DriverName" xml:space="preserve">
     <value>Azure Table Storage Driver</value>
+  </data>
+  <data name="LocalStorageDisplayName" xml:space="preserve">
+    <value>(Development)</value>
   </data>
 </root>

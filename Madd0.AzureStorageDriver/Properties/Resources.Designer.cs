@@ -61,7 +61,7 @@ namespace Madd0.AzureStorageDriver.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Mauricio DIAZ ORLICH (github@madd0.com).
+        ///   Looks up a localized string similar to Mauricio Diaz Orlich.
         /// </summary>
         internal static string AuthorName {
             get {
@@ -75,6 +75,15 @@ namespace Madd0.AzureStorageDriver.Properties {
         internal static string DriverName {
             get {
                 return ResourceManager.GetString("DriverName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (Development).
+        /// </summary>
+        internal static string LocalStorageDisplayName {
+            get {
+                return ResourceManager.GetString("LocalStorageDisplayName", resourceCulture);
             }
         }
     }

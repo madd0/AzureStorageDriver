@@ -9,7 +9,7 @@
 namespace Madd0.AzureStorageDriver
 {
     using System;
-    using System.Linq;
+    using System.Collections.Generic;
     using LINQPad.Extensibility.DataContext;
     using Madd0.AzureStorageDriver.Properties;
 
@@ -23,24 +23,39 @@ namespace Madd0.AzureStorageDriver
             get { return Resources.AuthorName; }
         }
 
+        /// <summary>
+        /// Gets the name of the driver.
+        /// </summary>
         public override string Name
         {
             get { return Resources.DriverName; }
         }
 
-        public override System.Collections.Generic.List<ExplorerItem> GetSchemaAndBuildAssembly(IConnectionInfo cxInfo, System.Reflection.AssemblyName assemblyToBuild, ref string nameSpace, ref string typeName)
+        /// <summary>Gets the text to display in the root Schema Explorer node for a given connection info.</summary>
+        /// <param name="cxInfo">The connection information.</param>
+        /// <returns>The text to display in the root Schema Explorer node for a given connection info</returns>
+        public override string GetConnectionDescription(IConnectionInfo connectionInfo)
         {
-            throw new NotImplementedException();
+            return new StorageAccountProperties(connectionInfo).DisplayName;
         }
 
-        public override string GetConnectionDescription(IConnectionInfo cxInfo)
+        public override bool ShowConnectionDialog(IConnectionInfo connectionInfo, bool isNewConnection)
         {
-            throw new NotImplementedException();
+            if (isNewConnection)
+            {
+                new StorageAccountProperties(connectionInfo).UseLocalStorage = true;
+            }
+
+            bool? result = new ConnectionDialog(connectionInfo).ShowDialog();
+            return result == true;
         }
 
-        public override bool ShowConnectionDialog(IConnectionInfo cxInfo, bool isNewConnection)
+        public override List<ExplorerItem> GetSchemaAndBuildAssembly(IConnectionInfo connectionInfo, System.Reflection.AssemblyName assemblyToBuild, ref string nameSpace, ref string typeName)
         {
-            throw new NotImplementedException();
+            return new List<ExplorerItem>()
+            {
+                new ExplorerItem("test", ExplorerItemKind.Schema, ExplorerIcon.Table)
+            };
         }
     }
 }
