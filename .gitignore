@@ -3,6 +3,10 @@
 *.suo
 *.user
 
+# VS File #
+###########
+StyleCop.Cache
+
 # Compile Output #
 ##################
 */bin/*
