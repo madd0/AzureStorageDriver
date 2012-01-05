@@ -50,12 +50,21 @@ namespace Madd0.AzureStorageDriver
             return result == true;
         }
 
+        public override bool AreRepositoriesEquivalent(IConnectionInfo connection1, IConnectionInfo connection2)
+        {
+            var account1 = (string)connection1.DriverData.Element("AccountName") ?? string.Empty;
+            var account2 = (string)connection2.DriverData.Element("AccountName") ?? string.Empty;
+
+            return account1.Equals(account2);
+        }
+
         public override List<ExplorerItem> GetSchemaAndBuildAssembly(IConnectionInfo connectionInfo, System.Reflection.AssemblyName assemblyToBuild, ref string nameSpace, ref string typeName)
         {
-            return new List<ExplorerItem>()
-            {
-                new ExplorerItem("test", ExplorerItemKind.Schema, ExplorerIcon.Table)
-            };
+            return SchemaBuilder.GetSchemaAndBuildAssembly(
+                new StorageAccountProperties(connectionInfo),
+                assemblyToBuild,
+                ref nameSpace,
+                ref typeName);
         }
     }
 }

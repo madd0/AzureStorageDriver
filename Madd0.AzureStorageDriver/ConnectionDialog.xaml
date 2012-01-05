@@ -6,7 +6,16 @@
         mc:Ignorable="d" Width="400"
         Title="Azure Storage Account" ResizeMode="NoResize" 
         SizeToContent="Height" WindowStartupLocation="CenterScreen" Background="{StaticResource {x:Static SystemColors.ControlBrushKey}}">
-    
+    <Window.Resources>
+        <Style TargetType="TextBox">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsChecked, ElementName=UseDevelopmentStorage}" Value="True">
+                    <Setter Property="IsEnabled" Value="False" />
+                    <Setter Property="Text" Value="" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
     <StackPanel Margin="7">
     
         <Label Padding="0 0 0 3">Storage account name:</Label>
@@ -14,7 +23,8 @@
         <DockPanel>
             <CheckBox TabIndex="2" Content="Use _development storage" VerticalAlignment="Center" 
                       Margin="30 0 0 0" DockPanel.Dock="Right"
-                      IsChecked="{Binding UseLocalStorage}" />
+                      IsChecked="{Binding UseLocalStorage}"
+                      x:Name="UseDevelopmentStorage" />
             <TextBox TabIndex="1" Text="{Binding AccountName}" />
         </DockPanel>
 

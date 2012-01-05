@@ -22,10 +22,10 @@ namespace Madd0.AzureStorageDriver
         private readonly IConnectionInfo _connectionInfo;
         private readonly XElement _driverData;
 
-        public StorageAccountProperties(IConnectionInfo cxInfo)
+        public StorageAccountProperties(IConnectionInfo connectionInfo)
         {
-            this._connectionInfo = cxInfo;
-            this._driverData = cxInfo.DriverData;
+            this._connectionInfo = connectionInfo;
+            this._driverData = connectionInfo.DriverData;
         }
 
         public bool Persist
@@ -53,12 +53,19 @@ namespace Madd0.AzureStorageDriver
         {
             get
             {
-                var currentValue = this._driverData.Element("UseLocalStorage").Value;
-                System.Diagnostics.Trace.WriteLine(string.Format("Current UseLocalStorageValue: {0}", currentValue));
-                return Convert.ToBoolean(currentValue); 
+                var currentValue = (string)this._driverData.Element("UseLocalStorage") ?? string.Empty;
+                return Convert.ToBoolean(currentValue);
             }
 
-            set { this._driverData.SetElementValue("UseLocalStorage", value); }
+            set
+            {
+                this._driverData.SetElementValue("UseLocalStorage", value);
+
+                if (value)
+                {
+                    this.ClearAccountNameAndKey();
+                }
+            }
         }
 
         public string AccountName
@@ -71,14 +78,30 @@ namespace Madd0.AzureStorageDriver
         {
             get
             {
-                var encryptedKey = (string)this._driverData.Element("AccountName") ?? string.Empty;
+                var encryptedKey = (string)this._driverData.Element("AccountKey") ?? string.Empty;
                 return this._connectionInfo.Decrypt(encryptedKey);
             }
 
             set
             {
                 var encryptedValue = this._connectionInfo.Encrypt(value);
-                this._driverData.SetElementValue("AccountName", encryptedValue);
+                this._driverData.SetElementValue("AccountKey", encryptedValue);
+            }
+        }
+
+        private void ClearAccountNameAndKey()
+        {
+            var accountName = this._driverData.Element("AccountName");
+            var accountKey = this._driverData.Element("AccountKey");
+
+            if (null != accountName)
+            {
+                accountName.Remove();
+            }
+
+            if (null != accountKey)
+            {
+                accountKey.Remove();
             }
         }
     }
