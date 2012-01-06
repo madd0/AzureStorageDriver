@@ -7,3 +7,4 @@ rem
 
 xcopy /i/y Madd0.AzureStorageDriver.dll "%AllUsersProfile%\LINQPad\Drivers\DataContext\4.0\Madd0.AzureStorageDriver (47842961fb3025d7)\"
 xcopy /i/y Madd0.AzureStorageDriver.pdb "%AllUsersProfile%\LINQPad\Drivers\DataContext\4.0\Madd0.AzureStorageDriver (47842961fb3025d7)\"
+xcopy /i/y Microsoft.WindowsAzure.StorageClient.dll "%AllUsersProfile%\LINQPad\Drivers\DataContext\4.0\Madd0.AzureStorageDriver (47842961fb3025d7)\"

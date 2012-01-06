@@ -58,13 +58,53 @@ namespace Madd0.AzureStorageDriver
             return account1.Equals(account2);
         }
 
+        public override IEnumerable<string> GetAssembliesToAdd()
+        {
+            return new string[]
+                {
+                    "System.Data.Services.Client.dll",
+                    "Microsoft.WindowsAzure.StorageClient.dll"
+                };
+        }
+
+        public override IEnumerable<string> GetNamespacesToAdd()
+        {
+            return new string[]
+                {
+                    "System.Data.Services.Client",
+                    "Microsoft.WindowsAzure",
+                    "Microsoft.WindowsAzure.StorageClient"
+                };
+        }
+
         public override List<ExplorerItem> GetSchemaAndBuildAssembly(IConnectionInfo connectionInfo, System.Reflection.AssemblyName assemblyToBuild, ref string nameSpace, ref string typeName)
         {
             return SchemaBuilder.GetSchemaAndBuildAssembly(
                 new StorageAccountProperties(connectionInfo),
+                this.GetDriverFolder(),
                 assemblyToBuild,
                 ref nameSpace,
                 ref typeName);
+        }
+
+        public override object[] GetContextConstructorArguments(IConnectionInfo connectionInfo)
+        {
+            var properties = new StorageAccountProperties(connectionInfo);
+
+            return new object[]
+            {
+                properties.GetStorageAccount().TableEndpoint.ToString(),
+                properties.GetStorageAccount().Credentials
+            };
+        }
+
+        public override ParameterDescriptor[] GetContextConstructorParameters(IConnectionInfo connectionInfo)
+        {
+            return new[] 
+            { 
+                new ParameterDescriptor("baseAddress", "System.String"),
+                new ParameterDescriptor("credentials", "Microsoft.WindowsAzure.StorageCredentials")
+            };
         }
     }
 }

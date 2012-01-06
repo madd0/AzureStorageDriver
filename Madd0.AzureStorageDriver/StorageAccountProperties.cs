@@ -13,6 +13,7 @@ namespace Madd0.AzureStorageDriver
     using LINQPad.Extensibility.DataContext;
     using System.Xml.Linq;
     using Madd0.AzureStorageDriver.Properties;
+    using Microsoft.WindowsAzure;
 
     /// <summary>
     /// Wrapper to expose typed properties over ConnectionInfo.DriverData.
@@ -68,6 +69,20 @@ namespace Madd0.AzureStorageDriver
             }
         }
 
+        public bool UseHttps
+        {
+            get
+            {
+                var currentValue = (string)this._driverData.Element("UseHttps") ?? string.Empty;
+                return Convert.ToBoolean(currentValue);
+            }
+
+            set
+            {
+                this._driverData.SetElementValue("UseHttps", value);
+            }
+        }
+
         public string AccountName
         {
             get { return (string)this._driverData.Element("AccountName") ?? string.Empty; }
@@ -102,6 +117,18 @@ namespace Madd0.AzureStorageDriver
             if (null != accountKey)
             {
                 accountKey.Remove();
+            }
+        }
+
+        public CloudStorageAccount GetStorageAccount()
+        {
+            if (this.UseLocalStorage)
+            {
+                return CloudStorageAccount.DevelopmentStorageAccount;
+            }
+            else
+            {
+                return new CloudStorageAccount(new StorageCredentialsAccountAndKey(this.AccountName, this.AccountKey), this.UseHttps);
             }
         }
     }
