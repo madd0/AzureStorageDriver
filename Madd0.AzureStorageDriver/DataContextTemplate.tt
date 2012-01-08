@@ -1,0 +1,78 @@
+﻿<#@ template language="C#" #>
+<#@ import namespace="System" #>
+<#@ import namespace="System.Collections" #>
+<#@ import namespace="System.Collections.Generic" #>
+
+namespace <#= this.Namespace #>
+{
+    using System;
+    using System.Data.Services.Client;
+    using Microsoft.WindowsAzure;
+    using Microsoft.WindowsAzure.StorageClient;
+
+    public class <#= this.TypeName #> : TableServiceContext
+    {
+        public <#= this.TypeName #>(string baseAddress, StorageCredentials credentials, CloudStorageAccount account)
+            : base(baseAddress, credentials)
+        {
+			this.TableClient = account.CreateCloudTableClient();
+        }
+
+		public CloudTableClient TableClient
+		{
+			get;
+			private set;
+		}
+
+<#
+foreach (var table in this.Tables)
+{
+#>
+        public DataServiceQuery<<#= table.Name #>Entity> <#= table.Name #>
+        {
+            get
+            {
+                return this.CreateQuery<<#= table.Name #>Entity>("<#= table.Name #>");
+            }
+        }
+<#
+}
+#>
+    }
+
+<#
+foreach (var table in this.Tables)
+{
+#>
+    public class <#= table.Name #>Entity : TableServiceEntity
+    {
+    <#
+    foreach (var column in table.Columns)
+    {
+        if (!this.DefaultProperties.Contains(column.Name))
+        {
+    #>
+        public <#= column.TypeName #> <#= column.Name #>
+        {
+            get;
+            set;
+        }
+    <#
+        }
+    }
+    #>
+    }
+<#
+}
+#>
+}
+
+<#+
+private readonly List<string> DefaultProperties = new List<string> { "PartitionKey", "RowKey", "Timestamp" };
+
+public string Namespace { get; set; }
+
+public string TypeName { get; set; }
+
+public IEnumerable<CloudTable> Tables { get; set; }
+#>

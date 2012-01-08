@@ -22,14 +22,14 @@ namespace Madd0.AzureStorageDriver.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    internal class Exceptions {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Resources() {
+        internal Exceptions() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Madd0.AzureStorageDriver.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Madd0.AzureStorageDriver.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Madd0.AzureStorageDriver.Properties.Exceptions", typeof(Exceptions).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,47 +61,20 @@ namespace Madd0.AzureStorageDriver.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to AzureTableStorage.
+        ///   Looks up a localized string similar to Cannot compile typed context: {0} (line {1}).
         /// </summary>
-        internal static string AssemblyTitle {
+        internal static string CannotCompileCode {
             get {
-                return ResourceManager.GetString("AssemblyTitle", resourceCulture);
+                return ResourceManager.GetString("CannotCompileCode", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 0.1.0.0.
+        ///   Looks up a localized string similar to Deserialized type &apos;{0}&apos; is not supported..
         /// </summary>
-        internal static string AssemblyVersion {
+        internal static string TypeNotSupported {
             get {
-                return ResourceManager.GetString("AssemblyVersion", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Mauricio Diaz Orlich.
-        /// </summary>
-        internal static string AuthorName {
-            get {
-                return ResourceManager.GetString("AuthorName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Azure Table Storage Driver.
-        /// </summary>
-        internal static string DriverName {
-            get {
-                return ResourceManager.GetString("DriverName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to (Development).
-        /// </summary>
-        internal static string LocalStorageDisplayName {
-            get {
-                return ResourceManager.GetString("LocalStorageDisplayName", resourceCulture);
+                return ResourceManager.GetString("TypeNotSupported", resourceCulture);
             }
         }
     }
