@@ -15,3 +15,7 @@ StyleCop.Cache
 # OS generated files #
 ######################
 Thumbs.db
+
+# Nuget Packages (auto-downloaded) #
+####################################
+/packages/*
