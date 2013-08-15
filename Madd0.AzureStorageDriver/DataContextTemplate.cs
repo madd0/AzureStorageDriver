@@ -14,7 +14,7 @@ namespace Madd0.AzureStorageDriver
     using System.Collections.Generic;
     
     
-    #line 1 "C:\Users\madd0\Documents\Personal Projects\Madd0.AzureStorageDriver\Madd0.AzureStorageDriver\DataContextTemplate.tt"
+    #line 1 "C:\Users\Hadadi_Zoltan\Documents\GitHub\AzureStorageDriver\Madd0.AzureStorageDriver\DataContextTemplate.tt"
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "10.0.0.0")]
     public partial class DataContextTemplate : DataContextTemplateBase
     {
@@ -22,7 +22,7 @@ namespace Madd0.AzureStorageDriver
         {
             this.Write("\r\nnamespace ");
             
-            #line 6 "C:\Users\madd0\Documents\Personal Projects\Madd0.AzureStorageDriver\Madd0.AzureStorageDriver\DataContextTemplate.tt"
+            #line 6 "C:\Users\Hadadi_Zoltan\Documents\GitHub\AzureStorageDriver\Madd0.AzureStorageDriver\DataContextTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(this.Namespace));
             
             #line default
@@ -31,14 +31,14 @@ namespace Madd0.AzureStorageDriver
                     "ft.WindowsAzure;\r\n    using Microsoft.WindowsAzure.StorageClient;\r\n\r\n    public " +
                     "class ");
             
-            #line 13 "C:\Users\madd0\Documents\Personal Projects\Madd0.AzureStorageDriver\Madd0.AzureStorageDriver\DataContextTemplate.tt"
+            #line 13 "C:\Users\Hadadi_Zoltan\Documents\GitHub\AzureStorageDriver\Madd0.AzureStorageDriver\DataContextTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(this.TypeName));
             
             #line default
             #line hidden
             this.Write(" : TableServiceContext\r\n    {\r\n        public ");
             
-            #line 15 "C:\Users\madd0\Documents\Personal Projects\Madd0.AzureStorageDriver\Madd0.AzureStorageDriver\DataContextTemplate.tt"
+            #line 15 "C:\Users\Hadadi_Zoltan\Documents\GitHub\AzureStorageDriver\Madd0.AzureStorageDriver\DataContextTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(this.TypeName));
             
             #line default
@@ -57,7 +57,7 @@ namespace Madd0.AzureStorageDriver
 
 ");
             
-            #line 27 "C:\Users\madd0\Documents\Personal Projects\Madd0.AzureStorageDriver\Madd0.AzureStorageDriver\DataContextTemplate.tt"
+            #line 27 "C:\Users\Hadadi_Zoltan\Documents\GitHub\AzureStorageDriver\Madd0.AzureStorageDriver\DataContextTemplate.tt"
 
 foreach (var table in this.Tables)
 {
@@ -65,16 +65,16 @@ foreach (var table in this.Tables)
             
             #line default
             #line hidden
-            this.Write("        public DataServiceQuery<");
+            this.Write("        public CloudTableQuery<");
             
-            #line 31 "C:\Users\madd0\Documents\Personal Projects\Madd0.AzureStorageDriver\Madd0.AzureStorageDriver\DataContextTemplate.tt"
+            #line 31 "C:\Users\Hadadi_Zoltan\Documents\GitHub\AzureStorageDriver\Madd0.AzureStorageDriver\DataContextTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(table.Name));
             
             #line default
             #line hidden
             this.Write("Entity> ");
             
-            #line 31 "C:\Users\madd0\Documents\Personal Projects\Madd0.AzureStorageDriver\Madd0.AzureStorageDriver\DataContextTemplate.tt"
+            #line 31 "C:\Users\Hadadi_Zoltan\Documents\GitHub\AzureStorageDriver\Madd0.AzureStorageDriver\DataContextTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(table.Name));
             
             #line default
@@ -82,21 +82,21 @@ foreach (var table in this.Tables)
             this.Write("\r\n        {\r\n            get\r\n            {\r\n                return this.CreateQu" +
                     "ery<");
             
-            #line 35 "C:\Users\madd0\Documents\Personal Projects\Madd0.AzureStorageDriver\Madd0.AzureStorageDriver\DataContextTemplate.tt"
+            #line 35 "C:\Users\Hadadi_Zoltan\Documents\GitHub\AzureStorageDriver\Madd0.AzureStorageDriver\DataContextTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(table.Name));
             
             #line default
             #line hidden
             this.Write("Entity>(\"");
             
-            #line 35 "C:\Users\madd0\Documents\Personal Projects\Madd0.AzureStorageDriver\Madd0.AzureStorageDriver\DataContextTemplate.tt"
+            #line 35 "C:\Users\Hadadi_Zoltan\Documents\GitHub\AzureStorageDriver\Madd0.AzureStorageDriver\DataContextTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(table.Name));
             
             #line default
             #line hidden
-            this.Write("\");\r\n            }\r\n        }\r\n");
+            this.Write("\").AsTableServiceQuery();\r\n            }\r\n        }\r\n");
             
-            #line 38 "C:\Users\madd0\Documents\Personal Projects\Madd0.AzureStorageDriver\Madd0.AzureStorageDriver\DataContextTemplate.tt"
+            #line 38 "C:\Users\Hadadi_Zoltan\Documents\GitHub\AzureStorageDriver\Madd0.AzureStorageDriver\DataContextTemplate.tt"
 
 }
 
@@ -105,7 +105,7 @@ foreach (var table in this.Tables)
             #line hidden
             this.Write("    }\r\n\r\n");
             
-            #line 43 "C:\Users\madd0\Documents\Personal Projects\Madd0.AzureStorageDriver\Madd0.AzureStorageDriver\DataContextTemplate.tt"
+            #line 43 "C:\Users\Hadadi_Zoltan\Documents\GitHub\AzureStorageDriver\Madd0.AzureStorageDriver\DataContextTemplate.tt"
 
 foreach (var table in this.Tables)
 {
@@ -115,14 +115,14 @@ foreach (var table in this.Tables)
             #line hidden
             this.Write("    public class ");
             
-            #line 47 "C:\Users\madd0\Documents\Personal Projects\Madd0.AzureStorageDriver\Madd0.AzureStorageDriver\DataContextTemplate.tt"
+            #line 47 "C:\Users\Hadadi_Zoltan\Documents\GitHub\AzureStorageDriver\Madd0.AzureStorageDriver\DataContextTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(table.Name));
             
             #line default
             #line hidden
             this.Write("Entity : TableServiceEntity\r\n    {\r\n    ");
             
-            #line 49 "C:\Users\madd0\Documents\Personal Projects\Madd0.AzureStorageDriver\Madd0.AzureStorageDriver\DataContextTemplate.tt"
+            #line 49 "C:\Users\Hadadi_Zoltan\Documents\GitHub\AzureStorageDriver\Madd0.AzureStorageDriver\DataContextTemplate.tt"
 
     foreach (var column in table.Columns)
     {
@@ -134,21 +134,21 @@ foreach (var table in this.Tables)
             #line hidden
             this.Write("        public ");
             
-            #line 55 "C:\Users\madd0\Documents\Personal Projects\Madd0.AzureStorageDriver\Madd0.AzureStorageDriver\DataContextTemplate.tt"
+            #line 55 "C:\Users\Hadadi_Zoltan\Documents\GitHub\AzureStorageDriver\Madd0.AzureStorageDriver\DataContextTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(column.TypeName));
             
             #line default
             #line hidden
             this.Write(" ");
             
-            #line 55 "C:\Users\madd0\Documents\Personal Projects\Madd0.AzureStorageDriver\Madd0.AzureStorageDriver\DataContextTemplate.tt"
+            #line 55 "C:\Users\Hadadi_Zoltan\Documents\GitHub\AzureStorageDriver\Madd0.AzureStorageDriver\DataContextTemplate.tt"
             this.Write(this.ToStringHelper.ToStringWithCulture(column.Name));
             
             #line default
             #line hidden
             this.Write("\r\n        {\r\n            get;\r\n            set;\r\n        }\r\n    ");
             
-            #line 60 "C:\Users\madd0\Documents\Personal Projects\Madd0.AzureStorageDriver\Madd0.AzureStorageDriver\DataContextTemplate.tt"
+            #line 60 "C:\Users\Hadadi_Zoltan\Documents\GitHub\AzureStorageDriver\Madd0.AzureStorageDriver\DataContextTemplate.tt"
 
         }
     }
@@ -158,7 +158,7 @@ foreach (var table in this.Tables)
             #line hidden
             this.Write("    }\r\n");
             
-            #line 65 "C:\Users\madd0\Documents\Personal Projects\Madd0.AzureStorageDriver\Madd0.AzureStorageDriver\DataContextTemplate.tt"
+            #line 65 "C:\Users\Hadadi_Zoltan\Documents\GitHub\AzureStorageDriver\Madd0.AzureStorageDriver\DataContextTemplate.tt"
 
 }
 
@@ -169,7 +169,7 @@ foreach (var table in this.Tables)
             return this.GenerationEnvironment.ToString();
         }
         
-        #line 70 "C:\Users\madd0\Documents\Personal Projects\Madd0.AzureStorageDriver\Madd0.AzureStorageDriver\DataContextTemplate.tt"
+        #line 70 "C:\Users\Hadadi_Zoltan\Documents\GitHub\AzureStorageDriver\Madd0.AzureStorageDriver\DataContextTemplate.tt"
 
 private readonly List<string> DefaultProperties = new List<string> { "PartitionKey", "RowKey", "Timestamp" };
 
