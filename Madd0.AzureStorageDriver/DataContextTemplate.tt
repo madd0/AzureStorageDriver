@@ -28,11 +28,11 @@ namespace <#= this.Namespace #>
 foreach (var table in this.Tables)
 {
 #>
-        public DataServiceQuery<<#= table.Name #>Entity> <#= table.Name #>
+        public CloudTableQuery<<#= table.Name #>Entity> <#= table.Name #>
         {
             get
             {
-                return this.CreateQuery<<#= table.Name #>Entity>("<#= table.Name #>");
+                return this.CreateQuery<<#= table.Name #>Entity>("<#= table.Name #>").AsTableServiceQuery();
             }
         }
 <#
