@@ -98,7 +98,9 @@
       <LastGenOutput>DataContextTemplate.cs</LastGenOutput>
     </None>
     <None Include="DevDeploy.bat" />
-    <None Include="header.xml" />
+    <None Include="header.xml">
+      <CopyToOutputDirectory Condition="'$(Configuration)' == 'Release'">Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
