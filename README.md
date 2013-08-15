@@ -17,6 +17,12 @@ Issues and feature requests can be made in the projects
 
 ## Versions ##
 
+### v1.0.1 - 2013-08-15 ###
+
+Corrects issue [#4][1].
+
 ### v1.0.0-beta - 2010-01-08 ###
 
 This is the first public release. Needs real-world testing.
+
+[1]: https://github.com/madd0/AzureStorageDriver/issues/4

@@ -68,8 +68,7 @@ namespace Madd0.AzureStorageDriver
         {
             get
             {
-                var currentValue = (string)this._driverData.Element("UseLocalStorage") ?? string.Empty;
-                return Convert.ToBoolean(currentValue);
+                return (bool?)this._driverData.Element("UseLocalStorage") ?? false;
             }
 
             set
@@ -91,8 +90,7 @@ namespace Madd0.AzureStorageDriver
         {
             get
             {
-                var currentValue = (string)this._driverData.Element("UseHttps") ?? string.Empty;
-                return Convert.ToBoolean(currentValue);
+                return (bool?)this._driverData.Element("UseHttps") ?? false;
             }
 
             set
