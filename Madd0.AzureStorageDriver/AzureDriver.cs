@@ -6,6 +6,8 @@
 // <author>Mauricio DIAZ ORLICH</author>
 //-----------------------------------------------------------------------
 
+using System;
+
 namespace Madd0.AzureStorageDriver
 {
     using System.Collections.Generic;
@@ -166,7 +168,14 @@ namespace Madd0.AzureStorageDriver
         /// <param name="executionManager">The execution manager.</param>
         public override void InitializeContext(IConnectionInfo connectionInfo, object context, QueryExecutionManager executionManager)
         {
-            var dsContext = (DataServiceContext)context;
+            /* Write Azure HTTP reuests to SQL tab in LinqPAD
+             * Skip if SqlTranslationWriter is not available
+             */
+
+            var dsContext = context as DataServiceContext;
+            if (dsContext == null) return;
+            
+            if (executionManager.SqlTranslationWriter == null) return;
 
             dsContext.SendingRequest += (sender, e) => executionManager.SqlTranslationWriter.WriteLine(e.Request.RequestUri);
         }
