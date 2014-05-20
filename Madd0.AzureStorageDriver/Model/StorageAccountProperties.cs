@@ -99,6 +99,19 @@ namespace Madd0.AzureStorageDriver
             }
         }
 
+        public bool ChinaAzure
+        {
+            get
+            {
+                return (bool?)this._driverData.Element("ChinaAzure") ?? false;
+            }
+
+            set
+            {
+                this._driverData.SetElementValue("ChinaAzure", value);
+            }
+        }
+
         /// <summary>
         /// Gets or sets the name of the storage account.
         /// </summary>
@@ -139,9 +152,37 @@ namespace Madd0.AzureStorageDriver
             }
             else
             {
-                return new CloudStorageAccount(new StorageCredentialsAccountAndKey(this.AccountName, this.AccountKey), this.UseHttps);
+                if (!ChinaAzure)
+                    return new CloudStorageAccount(new StorageCredentialsAccountAndKey(this.AccountName, this.AccountKey), this.UseHttps);
+                return new CloudStorageAccount(new StorageCredentialsAccountAndKey(this.AccountName, this.AccountKey)
+                    , BuildChinaAzureUri(AccountName, UseHttps, 0)
+                    , BuildChinaAzureUri(AccountName, UseHttps, 2)
+                    , BuildChinaAzureUri(AccountName, UseHttps, 1));
+
             }
         }
+
+        private Uri BuildChinaAzureUri(string accountName, bool useHttps, int type)
+        {
+            string typeStr;
+            switch (type)
+            {
+                case 0:
+                    typeStr = "blob";
+                    break;
+                case 1:
+                    typeStr = "table";
+                    break;
+                case 2:
+                    typeStr = "queue";
+                    break;
+                default:
+                    typeStr = "blob";
+                    break;
+            }
+            return new Uri(String.Format("http{0}://{1}.{2}.core.chinacloudapi.cn/", useHttps ? "s" : "", accountName, typeStr));
+        }
+
 
         /// <summary>
         /// Clears the account name and key.
