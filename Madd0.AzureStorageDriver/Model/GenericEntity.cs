@@ -9,7 +9,7 @@
 namespace Madd0.AzureStorageDriver
 {
     using System.Collections.Generic;
-    using Microsoft.WindowsAzure.StorageClient;
+    using Microsoft.WindowsAzure.Storage.Table;
 
     /// <summary>
     /// Represents a generic entity from table storage.
@@ -21,7 +21,7 @@ namespace Madd0.AzureStorageDriver
     /// <see cref="Properties"/> dictionary as string values, where the property name is the property in
     /// the dictionary.
     /// </remarks>
-    public class GenericEntity : TableServiceEntity
+    public class GenericEntity : TableEntity
     {
         /// <summary>
         /// Holds the property data.

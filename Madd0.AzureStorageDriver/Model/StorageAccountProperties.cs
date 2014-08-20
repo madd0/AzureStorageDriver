@@ -8,11 +8,11 @@
 
 namespace Madd0.AzureStorageDriver
 {
-    using System;
     using System.Xml.Linq;
     using LINQPad.Extensibility.DataContext;
     using Madd0.AzureStorageDriver.Properties;
-    using Microsoft.WindowsAzure;
+    using Microsoft.WindowsAzure.Storage;
+    using Microsoft.WindowsAzure.Storage.Auth;
 
     /// <summary>
     /// Wrapper to expose typed properties over ConnectionInfo.DriverData.
@@ -127,6 +127,15 @@ namespace Madd0.AzureStorageDriver
         }
 
         /// <summary>
+        /// Gets or sets the number of rows to sample to determine a table's schema.
+        /// </summary>
+        public int NumberOfRows
+        {
+            get { return (int?)this._driverData.Element("NumberOfRows") ?? 1; }
+            set { this._driverData.SetElementValue("NumberOfRows", value); }
+        }
+
+        /// <summary>
         /// Gets a <see cref="CloudStorageAccount"/> instace for the current connection.
         /// </summary>
         /// <returns>A <see cref="CloudStorageAccount"/> instace configured with the credentials
@@ -139,7 +148,7 @@ namespace Madd0.AzureStorageDriver
             }
             else
             {
-                return new CloudStorageAccount(new StorageCredentialsAccountAndKey(this.AccountName, this.AccountKey), this.UseHttps);
+                return new CloudStorageAccount(new StorageCredentials(this.AccountName, this.AccountKey), this.UseHttps);
             }
         }
 

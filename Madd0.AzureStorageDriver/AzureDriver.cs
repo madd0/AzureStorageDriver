@@ -15,6 +15,8 @@ namespace Madd0.AzureStorageDriver
     using System.Reflection;
     using LINQPad.Extensibility.DataContext;
     using Madd0.AzureStorageDriver.Properties;
+    using Madd0.UserQuery;
+    using Microsoft.WindowsAzure.Storage.Table.DataServices;
 
     /// <summary>
     /// LINQPad dynamic driver that lets users connect to an Azure Table Storage account.
@@ -55,7 +57,9 @@ namespace Madd0.AzureStorageDriver
         {
             if (isNewConnection)
             {
-                new StorageAccountProperties(connectionInfo).UseLocalStorage = true;
+                var prop = new StorageAccountProperties(connectionInfo);
+                prop.UseHttps = true;
+                prop.NumberOfRows = 100;
             }
 
             bool? result = new ConnectionDialog(connectionInfo).ShowDialog();
@@ -84,8 +88,8 @@ namespace Madd0.AzureStorageDriver
         {
             return new string[]
                 {
-                    "System.Data.Services.Client.dll",
-                    "Microsoft.WindowsAzure.StorageClient.dll"
+                    "Microsoft.WindowsAzure.Storage.dll",
+                    "Microsoft.Data.Services.Client.dll"
                 };
         }
 
@@ -97,9 +101,9 @@ namespace Madd0.AzureStorageDriver
         {
             return new string[]
                 {
-                    "System.Data.Services.Client",
                     "Microsoft.WindowsAzure",
-                    "Microsoft.WindowsAzure.StorageClient"
+                    "Microsoft.WindowsAzure.Storage",
+                    "Microsoft.WindowsAzure.Storage.Table"
                 };
         }
 
@@ -135,9 +139,7 @@ namespace Madd0.AzureStorageDriver
 
             return new object[]
             {
-                storageAccount.TableEndpoint.ToString(),
-                storageAccount.Credentials,
-                storageAccount
+                storageAccount.CreateCloudTableClient()
             };
         }
 
@@ -150,34 +152,9 @@ namespace Madd0.AzureStorageDriver
         public override ParameterDescriptor[] GetContextConstructorParameters(IConnectionInfo connectionInfo)
         {
             return new[] 
-            { 
-                new ParameterDescriptor("baseAddress", "System.String"),
-                new ParameterDescriptor("credentials", "Microsoft.WindowsAzure.StorageCredentials"),
-                new ParameterDescriptor("account", "Microsoft.WindowsAzure.CloudStorageAccount")
+            {
+                new ParameterDescriptor("client", "Microsoft.WindowsAzure.Storage.Table.CloudTableClient ")
             };
-        }
-
-        /// <summary>
-        /// Initializes the data context.
-        /// </summary>
-        /// <remarks>In this driver, initialization consists of listening to the 
-        /// <see cref="DataServiceContext.SendingRequest"/> event in order to extract the requested
-        /// URI and display it in the SQL tab.</remarks>
-        /// <param name="connectionInfo">The connection info.</param>
-        /// <param name="context">The context.</param>
-        /// <param name="executionManager">The execution manager.</param>
-        public override void InitializeContext(IConnectionInfo connectionInfo, object context, QueryExecutionManager executionManager)
-        {
-            /* Write Azure HTTP reuests to SQL tab in LinqPAD
-             * Skip if SqlTranslationWriter is not available
-             */
-
-            var dsContext = context as DataServiceContext;
-            if (dsContext == null) return;
-            
-            if (executionManager.SqlTranslationWriter == null) return;
-
-            dsContext.SendingRequest += (sender, e) => executionManager.SqlTranslationWriter.WriteLine(e.Request.RequestUri);
         }
     }
 }

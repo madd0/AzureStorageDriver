@@ -10,15 +10,13 @@ namespace Madd0.AzureStorageDriver
     using System;
     using System.CodeDom.Compiler;
     using System.Collections.Generic;
-    using System.Data.Services.Client;
     using System.IO;
     using System.Linq;
     using System.Reflection;
-    using System.Xml.Linq;
     using LINQPad.Extensibility.DataContext;
     using Madd0.AzureStorageDriver.Properties;
     using Microsoft.CSharp;
-    using Microsoft.WindowsAzure.StorageClient;
+    using Microsoft.WindowsAzure.Storage.Table;
 
     /// <summary>
     /// Provides the methods necessary to determining the storage account's schema and to building 
@@ -26,11 +24,6 @@ namespace Madd0.AzureStorageDriver
     /// </summary>
     internal static class SchemaBuilder
     {
-        // XML namespaces
-        private static readonly XNamespace AtomNS = "http://www.w3.org/2005/Atom";
-        private static readonly XNamespace dNS = "http://schemas.microsoft.com/ado/2007/08/dataservices";
-        private static readonly XNamespace mNS = "http://schemas.microsoft.com/ado/2007/08/dataservices/metadata";
-
         // Names of columns that should be marked as table keys.
         private static readonly List<string> keyColumns = new List<string> { "PartitionKey", "RowKey" };
 
@@ -71,46 +64,34 @@ namespace Madd0.AzureStorageDriver
         {
             var tableClient = properties.GetStorageAccount().CreateCloudTableClient();
 
-            var dataContext = tableClient.GetDataServiceContext();
-
-            // Entity deserialization has to be handled in a particular way since we are using a GenericEntity to
-            // to read all tables
-            dataContext.ReadingEntity += OnReadingEntity;
-
             // First get a list of all tables
             var model = (from tableName in tableClient.ListTables()
                          select new CloudTable
                          {
-                             Name = tableName
+                             Name = tableName.Name
                          }).ToList();
 
             // Then go through them
             foreach (var table in model)
             {
-                // Read the first entity to determine the table's schema
-                var firstRow = dataContext.CreateQuery<GenericEntity>(table.Name).Take(1).FirstOrDefault();
+                var tableColumns = tableClient.GetTableReference(table.Name).ExecuteQuery(new TableQuery().Take(properties.NumberOfRows))
+                    .SelectMany(row => row.Properties)
+                    .GroupBy(column => column.Key)
+                    .Select(grp => new TableColumn
+                     {
+                         Name = grp.Key,
+                         TypeName = GetType(grp.First().Value.PropertyType)
+                     });
 
-                if (null == firstRow)
+                var baseColumns = new List<TableColumn>
                 {
-                    // If there is no first entity, set a list with the mandatory PartitionKey, RowKey and 
-                    // Timestamp columns, which we know always exist
-                    table.Columns = new[] 
-                    { 
-                        new TableColumn { Name = "PartitionKey", TypeName = GetType("Edm.String") },
-                        new TableColumn { Name = "RowKey", TypeName = GetType("Edm.String") },
-                        new TableColumn { Name = "Timestamp", TypeName = GetType("Edm.DateTime") }
-                    };
-                }
-                else
-                {
-                    // Otherwise create a new TableColumn for each type
-                    table.Columns = from columnName in firstRow.Properties
-                                    select new TableColumn
-                                    {
-                                        Name = columnName.Key,
-                                        TypeName = GetType(columnName.Value)
-                                    };
-                }
+                    new TableColumn { Name = "PartitionKey", TypeName = GetType(EdmType.String) },
+                    new TableColumn { Name = "RowKey", TypeName = GetType(EdmType.String) },
+                    new TableColumn { Name = "Timestamp", TypeName = GetType(EdmType.DateTime) },
+                    new TableColumn { Name = "ETag", TypeName = GetType(EdmType.String) }
+                };
+
+                table.Columns = tableColumns.Concat(baseColumns).ToArray();
             }
 
             return model;
@@ -148,9 +129,11 @@ namespace Madd0.AzureStorageDriver
             var dependencies = new[] 
             { 
                 "System.dll",
-                "System.Core.dll", 
-                "System.Data.Services.Client.dll", 
-                Path.Combine(driverFolder, "Microsoft.WindowsAzure.StorageClient.dll") 
+                "System.Core.dll",
+                "System.Xml.dll",
+                Path.Combine(driverFolder, "Madd0.AzureStorageDriver.dll"), 
+                Path.Combine(driverFolder, "Microsoft.WindowsAzure.Storage.dll"), 
+                Path.Combine(driverFolder, "Microsoft.Data.Services.Client.dll") 
             };
 
             // Use the CSharpCodeProvider to compile. Since the driver is .NET 4.0, the typed assembly should be also
@@ -193,61 +176,29 @@ namespace Madd0.AzureStorageDriver
         }
 
         /// <summary>
-        /// Called when the data services data context has finished trying to deserialize and entity
-        /// from table storage.
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The <see cref="System.Data.Services.Client.ReadingWritingEntityEventArgs"/> instance containing the event data.</param>
-        private static void OnReadingEntity(object sender, ReadingWritingEntityEventArgs e)
-        {
-            GenericEntity entity = e.Entity as GenericEntity;
-
-            if (null == entity)
-            {
-                return;
-            }
-
-            entity.TableName = e.Data.Element(AtomNS + "link").Attribute("title").Value;
-
-            var q = from p in e.Data.Element(AtomNS + "content").Element(mNS + "properties").Elements()
-                    select new
-                    {
-                        Name = p.Name.LocalName,
-                        IsNull = string.Equals("true", p.Attribute(mNS + "null") == null ? null : p.Attribute(mNS + "null").Value, StringComparison.OrdinalIgnoreCase),
-                        TypeName = p.Attribute(mNS + "type") == null ? "Edm.String" : p.Attribute(mNS + "type").Value,
-                        p.Value
-                    };
-
-            foreach (var dp in q)
-            {
-                entity[dp.Name] = dp.TypeName;
-            }
-        }
-
-        /// <summary>
         /// Gets the C# type equivalent of an entity data model (Edm) type.
         /// </summary>
         /// <param name="type">The Edm type.</param>
         /// <returns>The C# type.</returns>
-        private static string GetType(string type)
+        private static string GetType(EdmType type)
         {
             switch (type)
             {
-                case "Edm.Binary":
+                case EdmType.Binary:
                     return "byte[]";
-                case "Edm.Boolean":
+                case EdmType.Boolean:
                     return "bool?";
-                case "Edm.DateTime":
+                case EdmType.DateTime:
                     return "DateTime?";
-                case "Edm.Double":
+                case EdmType.Double:
                     return "double?";
-                case "Edm.Guid":
+                case EdmType.Guid:
                     return "Guid?";
-                case "Edm.Int32":
+                case EdmType.Int32:
                     return "int?";
-                case "Edm.Int64":
+                case EdmType.Int64:
                     return "long?";
-                case "Edm.String":
+                case EdmType.String:
                     return "string";
                 default:
                     throw new NotSupportedException(string.Format(Exceptions.TypeNotSupported, type));

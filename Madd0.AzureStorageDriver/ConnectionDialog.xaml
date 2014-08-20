@@ -1,11 +1,15 @@
 ﻿<Window x:Class="Madd0.AzureStorageDriver.ConnectionDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-        mc:Ignorable="d" Width="400"
-        Title="Azure Storage Account" ResizeMode="NoResize" 
-        SizeToContent="Height" WindowStartupLocation="CenterScreen" Background="{StaticResource {x:Static SystemColors.ControlBrushKey}}">
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        Title="Azure Storage Account"
+        Width="400"
+        Background="{StaticResource {x:Static SystemColors.ControlBrushKey}}"
+        ResizeMode="NoResize"
+        SizeToContent="Height"
+        WindowStartupLocation="CenterScreen"
+        mc:Ignorable="d">
     <Window.Resources>
         <Style TargetType="TextBox">
             <Style.Triggers>
@@ -17,26 +21,69 @@
         </Style>
     </Window.Resources>
     <StackPanel Margin="7">
-    
+
         <Label Padding="0 0 0 3">Storage account name:</Label>
-      
+
         <DockPanel>
-            <CheckBox TabIndex="2" Content="Use _development storage" VerticalAlignment="Center" 
-                      Margin="30 0 0 0" DockPanel.Dock="Right"
+            <CheckBox x:Name="UseDevelopmentStorage"
+                      Margin="30 0 0 0"
+                      VerticalAlignment="Center"
+                      Content="Use _development storage"
+                      DockPanel.Dock="Right"
                       IsChecked="{Binding UseLocalStorage}"
-                      x:Name="UseDevelopmentStorage" />
+                      TabIndex="2" />
             <TextBox TabIndex="1" Text="{Binding AccountName}" />
         </DockPanel>
 
         <Label Padding="0 0 0 3">Storage account key:</Label>
         <TextBox TabIndex="3" Text="{Binding AccountKey}" />
 
-        <CheckBox TabIndex="4" Content="_Use HTTPS" Margin="0 10 0 0"
-                  IsChecked="{Binding UseHttps}" />
-        <CheckBox TabIndex="5" Content="_Remember this connection" Margin="0 5 0 0"
-                  IsChecked="{Binding Persist}" />
-        
-        <DockPanel LastChildFill="False" Margin="0 10 0 0">
+        <CheckBox Margin="0 10"
+                  Content="_Remember this connection"
+                  IsChecked="{Binding Persist}"
+                  TabIndex="5" />
+
+        <Expander Header="_Advanced">
+            <Expander.Style>
+                <Style TargetType="Expander">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsChecked, ElementName=UseDevelopmentStorage}" Value="True">
+                            <Setter Property="IsEnabled" Value="False" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Expander.Style>
+            <StackPanel Margin="23 5 0 0">
+                <CheckBox Margin="0"
+                          Content="_Use HTTPS"
+                          IsChecked="{Binding UseHttps}"
+                          TabIndex="4" />
+                <StackPanel Margin="0 10" Orientation="Horizontal">
+                    <TextBlock>Number of lines to sample:</TextBlock>
+                    <TextBox Width="50"
+                             Margin="5 0"
+                             Text="{Binding NumberOfRows}"
+                             TextAlignment="Right" />
+                    <Grid>
+                        <Grid.ToolTip>
+                            <ToolTip>
+                                <TextBlock>The number of lines that will be read in order to determine the schema of an Azure Table.</TextBlock>
+                            </ToolTip>
+                        </Grid.ToolTip>
+                        <Ellipse Width="15"
+                                 Height="15"
+                                 Fill="#3CA1C8" />
+                        <TextBlock Margin="0 1 0 0"
+                                   HorizontalAlignment="Center"
+                                   FontWeight="Bold"
+                                   Foreground="White"
+                                   Text="?" />
+                    </Grid>
+                </StackPanel>
+            </StackPanel>
+        </Expander>
+
+        <DockPanel Margin="0 10 0 0" LastChildFill="False">
             <DockPanel.Resources>
                 <Style TargetType="Button">
                     <Setter Property="DockPanel.Dock" Value="Right" />
@@ -46,9 +93,19 @@
                 </Style>
             </DockPanel.Resources>
 
-            <Button TabIndex="7" Grid.Row="5" Grid.Column="1" IsCancel="True">_Cancel</Button>
-            <Button TabIndex="6" Grid.Row="5" IsDefault="True" Click="OnOkClick">_OK</Button>
+            <Button Grid.Row="5"
+                    Grid.Column="1"
+                    IsCancel="True"
+                    TabIndex="7">
+                _Cancel
+            </Button>
+            <Button Grid.Row="5"
+                    Click="OnOkClick"
+                    IsDefault="True"
+                    TabIndex="6">
+                _OK
+            </Button>
         </DockPanel>
-        
+
     </StackPanel>
 </Window>

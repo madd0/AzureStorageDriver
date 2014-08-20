@@ -6,33 +6,38 @@
 namespace <#= this.Namespace #>
 {
     using System;
-    using System.Data.Services.Client;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Madd0.UserQuery;
     using Microsoft.WindowsAzure;
-    using Microsoft.WindowsAzure.StorageClient;
+    using Microsoft.WindowsAzure.Storage;
+    using Microsoft.WindowsAzure.Storage.Auth;
+    using Microsoft.WindowsAzure.Storage.Table;
+    using Microsoft.WindowsAzure.Storage.Table.DataServices;
 
-    public class <#= this.TypeName #> : TableServiceContext
+    public class <#= this.TypeName #>
     {
-        public <#= this.TypeName #>(string baseAddress, StorageCredentials credentials, CloudStorageAccount account)
-            : base(baseAddress, credentials)
+        public <#= this.TypeName #>(CloudTableClient  client)
         {
-			this.TableClient = account.CreateCloudTableClient();
+            this.TableClient = client;
         }
 
-		public CloudTableClient TableClient
-		{
-			get;
-			private set;
-		}
+        public CloudTableClient TableClient
+        {
+            get;
+            private set;
+        }
 
 <#
 foreach (var table in this.Tables)
 {
 #>
-        public DataServiceQuery<<#= table.Name #>Entity> <#= table.Name #>
+        public ExtendedTableQuery<<#= table.Name #>Entity> <#= table.Name #>
         {
             get
             {
-                return this.CreateQuery<<#= table.Name #>Entity>("<#= table.Name #>");
+                return new ExtendedTableQuery<<#= table.Name #>Entity>(this.TableClient.GetTableReference("<#= table.Name #>"));
             }
         }
 <#
@@ -44,7 +49,7 @@ foreach (var table in this.Tables)
 foreach (var table in this.Tables)
 {
 #>
-    public class <#= table.Name #>Entity : TableServiceEntity
+    public class <#= table.Name #>Entity : TableEntity
     {
     <#
     foreach (var column in table.Columns)
@@ -68,7 +73,7 @@ foreach (var table in this.Tables)
 }
 
 <#+
-private readonly List<string> DefaultProperties = new List<string> { "PartitionKey", "RowKey", "Timestamp" };
+private readonly List<string> DefaultProperties = new List<string> { "PartitionKey", "RowKey", "Timestamp", "ETag" };
 
 public string Namespace { get; set; }
 
