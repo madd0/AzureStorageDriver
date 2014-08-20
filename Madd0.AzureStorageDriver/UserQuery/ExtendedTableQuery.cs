@@ -168,5 +168,13 @@ namespace Madd0.UserQuery
                 return _query.TakeCount;
             }
         }
+
+        public CloudTable CloudTable
+        {
+            get
+            {
+                return _table;
+            }
+        }
     }
 }

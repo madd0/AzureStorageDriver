@@ -43,6 +43,12 @@ foreach (var table in this.Tables)
 <#
 }
 #>
+
+        public TableQuery<TElement> MakeTableQuery<TElement>()
+            where TElement : ITableEntity
+        {
+            return new TableQuery<TElement>();
+        }
     }
 
 <#
