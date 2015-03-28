@@ -136,6 +136,20 @@ namespace Madd0.AzureStorageDriver
         }
 
         /// <summary>
+        /// Returns the maximum number of parallel model loading
+        /// operations can occur when loading schema for the azure table storage tables
+        /// </summary>
+        public int ModelLoadMaxParallelism
+        {
+            get { return (int?)this._driverData.Element("ModelLoadMaxParallelism") ??
+                    (System.Environment.ProcessorCount * 2); }
+            set
+            {
+                this._driverData.SetElementValue("ModelLoadMaxParallelism", value);
+            }
+        }
+        
+        /// <summary>
         /// Gets a <see cref="CloudStorageAccount"/> instace for the current connection.
         /// </summary>
         /// <returns>A <see cref="CloudStorageAccount"/> instace configured with the credentials

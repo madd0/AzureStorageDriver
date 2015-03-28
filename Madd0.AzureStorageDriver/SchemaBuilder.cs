@@ -13,10 +13,12 @@ namespace Madd0.AzureStorageDriver
     using System.IO;
     using System.Linq;
     using System.Reflection;
+    using System.Threading.Tasks;
     using LINQPad.Extensibility.DataContext;
     using Madd0.AzureStorageDriver.Properties;
     using Microsoft.CSharp;
     using Microsoft.WindowsAzure.Storage.Table;
+
 
     /// <summary>
     /// Provides the methods necessary to determining the storage account's schema and to building 
@@ -63,7 +65,7 @@ namespace Madd0.AzureStorageDriver
         private static IEnumerable<CloudTable> GetModel(StorageAccountProperties properties)
         {
             var tableClient = properties.GetStorageAccount().CreateCloudTableClient();
-
+            
             // First get a list of all tables
             var model = (from tableName in tableClient.ListTables()
                          select new CloudTable
@@ -71,18 +73,24 @@ namespace Madd0.AzureStorageDriver
                              Name = tableName.Name
                          }).ToList();
 
-            // Then go through them
-            foreach (var table in model)
+            var options = new ParallelOptions()
             {
-                var tableColumns = tableClient.GetTableReference(table.Name).ExecuteQuery(new TableQuery().Take(properties.NumberOfRows))
+                MaxDegreeOfParallelism = properties.ModelLoadMaxParallelism
+            };
+
+            Parallel.ForEach(model, options, table =>
+            {
+                var threadTableClient = properties.GetStorageAccount().CreateCloudTableClient();
+
+                var tableColumns = threadTableClient.GetTableReference(table.Name).ExecuteQuery(new TableQuery().Take(properties.NumberOfRows))
                     .SelectMany(row => row.Properties)
                     .GroupBy(column => column.Key)
                     .Select(grp => new TableColumn
-                     {
-                         Name = grp.Key,
-                         TypeName = GetType(grp.First().Value.PropertyType)
-                     });
-
+                    {
+                        Name = grp.Key,
+                        TypeName = GetType(grp.First().Value.PropertyType)
+                    });
+                
                 var baseColumns = new List<TableColumn>
                 {
                     new TableColumn { Name = "PartitionKey", TypeName = GetType(EdmType.String) },
@@ -92,8 +100,8 @@ namespace Madd0.AzureStorageDriver
                 };
 
                 table.Columns = tableColumns.Concat(baseColumns).ToArray();
-            }
-
+            });
+            
             return model;
         }
 
