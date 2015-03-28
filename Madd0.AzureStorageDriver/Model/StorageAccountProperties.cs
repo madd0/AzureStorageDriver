@@ -148,7 +148,21 @@ namespace Madd0.AzureStorageDriver
                 this._driverData.SetElementValue("ModelLoadMaxParallelism", value);
             }
         }
-        
+
+        /// <summary>
+        /// A date format which is table names can potentially end in
+        /// for table rollover. This prevents loading duplicate schemas
+        /// for rollover tables
+        /// </summary>
+        public string TableRolloverDateFormat
+        {
+            get { return (string)this._driverData.Element("TableRolloverDateFormat") ?? "yyyyMMdd"; }
+            set
+            {                
+                this._driverData.SetElementValue("TableRolloverDateFormat", value);
+            }
+        }
+
         /// <summary>
         /// Gets a <see cref="CloudStorageAccount"/> instace for the current connection.
         /// </summary>

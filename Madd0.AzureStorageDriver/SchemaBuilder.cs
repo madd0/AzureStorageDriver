@@ -21,6 +21,7 @@ namespace Madd0.AzureStorageDriver
     using Microsoft.WindowsAzure.Storage.Table;
 
 
+
     /// <summary>
     /// Provides the methods necessary to determining the storage account's schema and to building 
     /// the typed data context .
@@ -71,6 +72,8 @@ namespace Madd0.AzureStorageDriver
 
             var tableClient = properties.GetStorageAccount().CreateCloudTableClient();
             
+            string rolloverFormat = properties.TableRolloverDateFormat;
+
             // First get a list of all tables
             var model = (from tableName in tableClient.ListTables()
                          select new CloudTable
@@ -78,16 +81,34 @@ namespace Madd0.AzureStorageDriver
                              Name = tableName.Name
                          }).ToList();
 
+            var schemas = model
+                .GroupBy(table =>
+                {
+                    string schemaName = table.Name;
+                    DateTime rollover;
+                    for (int i = table.Name.Length - 1; i > 0; i--)
+                    {
+                        string tail = schemaName.Substring(i);
+                        if(DateTime.TryParseExact(tail, rolloverFormat, null, System.Globalization.DateTimeStyles.None, out rollover))
+                        {
+                            schemaName = schemaName.Substring(0, i);
+                            break;
+                        }
+                    }
+                    return schemaName;
+                })
+                .ToList();
+
             var options = new ParallelOptions()
             {
                 MaxDegreeOfParallelism = properties.ModelLoadMaxParallelism
             };
 
-            Parallel.ForEach(model, options, table =>
+            Parallel.ForEach(schemas, options, group =>
             {
                 var threadTableClient = properties.GetStorageAccount().CreateCloudTableClient();
 
-                var tableColumns = threadTableClient.GetTableReference(table.Name).ExecuteQuery(new TableQuery().Take(properties.NumberOfRows))
+                var tableColumns = threadTableClient.GetTableReference(group.Last().Name).ExecuteQuery(new TableQuery().Take(properties.NumberOfRows))
                     .SelectMany(row => row.Properties)
                     .GroupBy(column => column.Key)
                     .Select(grp => new TableColumn
@@ -104,7 +125,10 @@ namespace Madd0.AzureStorageDriver
                     new TableColumn { Name = "ETag", TypeName = GetType(EdmType.String) }
                 };
 
-                table.Columns = tableColumns.Concat(baseColumns).ToArray();
+                foreach(var table in group)
+                {
+                    table.Columns = tableColumns.Concat(baseColumns).ToArray();
+                }
             });
             
             return model;

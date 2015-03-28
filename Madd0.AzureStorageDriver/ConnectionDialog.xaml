@@ -102,6 +102,28 @@
                                    Text="?" />
                     </Grid>
                 </StackPanel>
+                <StackPanel Margin="0 10" Orientation="Horizontal">
+                    <TextBlock>Table rollover date format:</TextBlock>
+                    <TextBox Width="50"
+                             Margin="5 0"
+                             Text="{Binding TableRolloverDateFormat}"
+                             TextAlignment="Right" />
+                    <Grid>
+                        <Grid.ToolTip>
+                            <ToolTip>
+                                <TextBlock>The date format that is appended to table names in table rollover. This is used to reduce the number of azure tables that need to be inspected to load schema information.</TextBlock>
+                            </ToolTip>
+                        </Grid.ToolTip>
+                        <Ellipse Width="15"
+                                 Height="15"
+                                 Fill="#3CA1C8" />
+                        <TextBlock Margin="0 1 0 0"
+                                   HorizontalAlignment="Center"
+                                   FontWeight="Bold"
+                                   Foreground="White"
+                                   Text="?" />
+                    </Grid>
+                </StackPanel>
             </StackPanel>
         </Expander>
 
