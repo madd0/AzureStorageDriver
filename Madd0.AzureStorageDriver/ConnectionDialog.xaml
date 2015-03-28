@@ -80,6 +80,28 @@
                                    Text="?" />
                     </Grid>
                 </StackPanel>
+                <StackPanel Margin="0 10" Orientation="Horizontal">
+                    <TextBlock>Schema loading parallelism:</TextBlock>
+                    <TextBox Width="50"
+                             Margin="5 0"
+                             Text="{Binding ModelLoadMaxParallelism}"
+                             TextAlignment="Right" />
+                    <Grid>
+                        <Grid.ToolTip>
+                            <ToolTip>
+                                <TextBlock>The number of concurrent calls that will be made to Azure Table Storage to determine the columns available for each table.</TextBlock>
+                            </ToolTip>
+                        </Grid.ToolTip>
+                        <Ellipse Width="15"
+                                 Height="15"
+                                 Fill="#3CA1C8" />
+                        <TextBlock Margin="0 1 0 0"
+                                   HorizontalAlignment="Center"
+                                   FontWeight="Bold"
+                                   Foreground="White"
+                                   Text="?" />
+                    </Grid>
+                </StackPanel>
             </StackPanel>
         </Expander>
 
