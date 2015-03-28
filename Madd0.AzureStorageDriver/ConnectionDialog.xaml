@@ -104,10 +104,10 @@
                 </StackPanel>
                 <StackPanel Margin="0 10" Orientation="Horizontal">
                     <TextBlock>Table rollover date format:</TextBlock>
-                    <TextBox Width="50"
+                    <TextBox Width="100"
                              Margin="5 0"
                              Text="{Binding TableRolloverDateFormat}"
-                             TextAlignment="Right" />
+                             TextAlignment="Left" />
                     <Grid>
                         <Grid.ToolTip>
                             <ToolTip>
