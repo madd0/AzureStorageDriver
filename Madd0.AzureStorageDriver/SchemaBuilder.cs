@@ -12,6 +12,7 @@ namespace Madd0.AzureStorageDriver
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Net;
     using System.Reflection;
     using System.Threading.Tasks;
     using LINQPad.Extensibility.DataContext;
@@ -64,6 +65,10 @@ namespace Madd0.AzureStorageDriver
         /// storage model.</returns>
         private static IEnumerable<CloudTable> GetModel(StorageAccountProperties properties)
         {
+            // make sure that we can make at least ModelLoadMaxParallelism concurrent
+            // cals to azure table storage
+            ServicePointManager.DefaultConnectionLimit = properties.ModelLoadMaxParallelism;
+
             var tableClient = properties.GetStorageAccount().CreateCloudTableClient();
             
             // First get a list of all tables
