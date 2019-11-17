@@ -12,11 +12,15 @@ namespace Madd0.AzureStorageDriver
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Net;
     using System.Reflection;
+    using System.Threading.Tasks;
     using LINQPad.Extensibility.DataContext;
     using Madd0.AzureStorageDriver.Properties;
     using Microsoft.CSharp;
     using Microsoft.WindowsAzure.Storage.Table;
+
+
 
     /// <summary>
     /// Provides the methods necessary to determining the storage account's schema and to building 
@@ -62,7 +66,13 @@ namespace Madd0.AzureStorageDriver
         /// storage model.</returns>
         private static IEnumerable<CloudTable> GetModel(StorageAccountProperties properties)
         {
+            // make sure that we can make at least ModelLoadMaxParallelism concurrent
+            // cals to azure table storage
+            ServicePointManager.DefaultConnectionLimit = properties.ModelLoadMaxParallelism;
+
             var tableClient = properties.GetStorageAccount().CreateCloudTableClient();
+            
+            string rolloverFormat = properties.TableRolloverDateFormat;
 
             // First get a list of all tables
             var model = (from tableName in tableClient.ListTables()
@@ -71,18 +81,42 @@ namespace Madd0.AzureStorageDriver
                              Name = tableName.Name
                          }).ToList();
 
-            // Then go through them
-            foreach (var table in model)
+            var schemas = model
+                .GroupBy(table =>
+                {
+                    string schemaName = table.Name;
+                    DateTime rollover;
+                    for (int i = table.Name.Length - 1; i > 0; i--)
+                    {
+                        string tail = schemaName.Substring(i);
+                        if(DateTime.TryParseExact(tail, rolloverFormat, null, System.Globalization.DateTimeStyles.None, out rollover))
+                        {
+                            schemaName = schemaName.Substring(0, i);
+                            break;
+                        }
+                    }
+                    return schemaName;
+                })
+                .ToList();
+
+            var options = new ParallelOptions()
             {
-                var tableColumns = tableClient.GetTableReference(table.Name).ExecuteQuery(new TableQuery().Take(properties.NumberOfRows))
+                MaxDegreeOfParallelism = properties.ModelLoadMaxParallelism
+            };
+
+            Parallel.ForEach(schemas, options, group =>
+            {
+                var threadTableClient = properties.GetStorageAccount().CreateCloudTableClient();
+
+                var tableColumns = threadTableClient.GetTableReference(group.Last().Name).ExecuteQuery(new TableQuery().Take(properties.NumberOfRows))
                     .SelectMany(row => row.Properties)
                     .GroupBy(column => column.Key)
                     .Select(grp => new TableColumn
-                     {
-                         Name = grp.Key,
-                         TypeName = GetType(grp.First().Value.PropertyType)
-                     });
-
+                    {
+                        Name = grp.Key,
+                        TypeName = GetType(grp.First().Value.PropertyType)
+                    });
+                
                 var baseColumns = new List<TableColumn>
                 {
                     new TableColumn { Name = "PartitionKey", TypeName = GetType(EdmType.String) },
@@ -91,9 +125,12 @@ namespace Madd0.AzureStorageDriver
                     new TableColumn { Name = "ETag", TypeName = GetType(EdmType.String) }
                 };
 
-                table.Columns = tableColumns.Concat(baseColumns).ToArray();
-            }
-
+                foreach(var table in group)
+                {
+                    table.Columns = tableColumns.Concat(baseColumns).ToArray();
+                }
+            });
+            
             return model;
         }
 
