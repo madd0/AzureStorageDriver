@@ -7,25 +7,28 @@
 //-----------------------------------------------------------------------
 namespace Madd0.AzureStorageDriver
 {
+#if NETCORE
+    using Microsoft.Azure.Cosmos.Table;
+#else
+    using Microsoft.Azure.CosmosDB.Table;
+#endif
+
     using System;
-    using System.CodeDom.Compiler;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Reflection;
     using LINQPad.Extensibility.DataContext;
     using Madd0.AzureStorageDriver.Properties;
-    using Microsoft.CSharp;
-    using Microsoft.WindowsAzure.Storage.Table;
 
     /// <summary>
-    /// Provides the methods necessary to determining the storage account's schema and to building 
+    /// Provides the methods necessary to determining the storage account's schema and to building
     /// the typed data context .
     /// </summary>
     internal static class SchemaBuilder
     {
         // Names of columns that should be marked as table keys.
-        private static readonly List<string> keyColumns = new List<string> { "PartitionKey", "RowKey" };
+        private static readonly List<string> KeyColumns = new List<string> { "PartitionKey", "RowKey" };
 
         /// <summary>
         /// Gets the schema and builds the assembly.
@@ -78,10 +81,10 @@ namespace Madd0.AzureStorageDriver
                     .SelectMany(row => row.Properties)
                     .GroupBy(column => column.Key)
                     .Select(grp => new TableColumn
-                     {
-                         Name = grp.Key,
-                         TypeName = GetType(grp.First().Value.PropertyType)
-                     });
+                    {
+                        Name = grp.Key,
+                        TypeName = GetType(grp.First().Value.PropertyType)
+                    });
 
                 var baseColumns = new List<TableColumn>
                 {
@@ -107,11 +110,12 @@ namespace Madd0.AzureStorageDriver
         private static string GenerateCode(string typeName, string @namespace, IEnumerable<CloudTable> model)
         {
             // We use a T4-generated class as the template
-            var codeGenerator = new DataContextTemplate();
-
-            codeGenerator.Namespace = @namespace;
-            codeGenerator.TypeName = typeName;
-            codeGenerator.Tables = model;
+            var codeGenerator = new DataContextTemplate
+            {
+                Namespace = @namespace,
+                TypeName = typeName,
+                Tables = model
+            };
 
             return codeGenerator.TransformText();
         }
@@ -124,33 +128,21 @@ namespace Madd0.AzureStorageDriver
         /// <param name="code">The code of the typed data context.</param>
         private static void BuildAssembly(AssemblyName name, string driverFolder, string code)
         {
-            CompilerResults results;
+            ICompiler compiler;
 
-            var dependencies = new[] 
-            { 
-                "System.dll",
-                "System.Core.dll",
-                "System.Xml.dll",
-                Path.Combine(driverFolder, "Madd0.AzureStorageDriver.dll"), 
-                Path.Combine(driverFolder, "Microsoft.WindowsAzure.Storage.dll"), 
-                Path.Combine(driverFolder, "Microsoft.Data.Services.Client.dll") 
+            var dependencies = new List<string>
+            {
+                Path.Combine(driverFolder, "Madd0.AzureStorageDriver.dll"),
+                typeof(TableQuery).Assembly.Location
             };
-
-            // Use the CSharpCodeProvider to compile. Since the driver is .NET 4.0, the typed assembly should be also
-            using (var codeProvider = new CSharpCodeProvider(new Dictionary<string, string>() { { "CompilerVersion", "v4.0" } }))
-            {
-#if DEBUG
-                var options = new CompilerParameters(dependencies, name.CodeBase, true);
+#if NETCORE
+            compiler = new RoslynCompiler();
 #else
-                var options = new CompilerParameters(dependencies, name.CodeBase, false);
+            compiler = new CodeDomCompiler();
+            dependencies.Add("System.dll");
+            dependencies.Add("System.Core.dll");
 #endif
-                results = codeProvider.CompileAssemblyFromSource(options, code);
-            }
-
-            if (results.Errors.Count > 0)
-            {
-                throw new Exception(string.Format(Exceptions.CannotCompileCode, results.Errors[0].ErrorText, results.Errors[0].Line));
-            }
+            compiler.Compile(code, name, dependencies);
         }
 
         /// <summary>
@@ -167,7 +159,7 @@ namespace Madd0.AzureStorageDriver
                         Children = (from column in table.Columns
                                     select new ExplorerItem(column.Name + " (" + column.TypeName + ")", ExplorerItemKind.Property, ExplorerIcon.Column)
                                     {
-                                        Icon = keyColumns.Contains(column.Name) ? ExplorerIcon.Key : ExplorerIcon.Column,
+                                        Icon = KeyColumns.Contains(column.Name) ? ExplorerIcon.Key : ExplorerIcon.Column,
                                         DragText = column.Name
                                     }).ToList(),
                         DragText = table.Name,
@@ -182,27 +174,26 @@ namespace Madd0.AzureStorageDriver
         /// <returns>The C# type.</returns>
         private static string GetType(EdmType type)
         {
-            switch (type)
+            return type switch
             {
-                case EdmType.Binary:
-                    return "byte[]";
-                case EdmType.Boolean:
-                    return "bool?";
-                case EdmType.DateTime:
-                    return "DateTime?";
-                case EdmType.Double:
-                    return "double?";
-                case EdmType.Guid:
-                    return "Guid?";
-                case EdmType.Int32:
-                    return "int?";
-                case EdmType.Int64:
-                    return "long?";
-                case EdmType.String:
-                    return "string";
-                default:
-                    throw new NotSupportedException(string.Format(Exceptions.TypeNotSupported, type));
-            }
+                EdmType.Binary => "byte[]",
+
+                EdmType.Boolean => "bool?",
+
+                EdmType.DateTime => "DateTime?",
+
+                EdmType.Double => "double?",
+
+                EdmType.Guid => "Guid?",
+
+                EdmType.Int32 => "int?",
+
+                EdmType.Int64 => "long?",
+
+                EdmType.String => "string",
+
+                _ => throw new NotSupportedException(string.Format(Exceptions.TypeNotSupported, type)),
+            };
         }
     }
 }

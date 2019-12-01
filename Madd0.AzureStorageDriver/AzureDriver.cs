@@ -6,23 +6,37 @@
 // <author>Mauricio DIAZ ORLICH</author>
 //-----------------------------------------------------------------------
 
-using System;
-
 namespace Madd0.AzureStorageDriver
 {
+    using System;
     using System.Collections.Generic;
-    using System.Data.Services.Client;
     using System.Reflection;
     using LINQPad.Extensibility.DataContext;
     using Madd0.AzureStorageDriver.Properties;
-    using Madd0.UserQuery;
-    using Microsoft.WindowsAzure.Storage.Table.DataServices;
+#if NETCORE
+    using Microsoft.Azure.Cosmos.Table;
+#else
+    using Microsoft.Azure.CosmosDB.Table;
+#endif
 
     /// <summary>
     /// LINQPad dynamic driver that lets users connect to an Azure Table Storage account.
     /// </summary>
     public class AzureDriver : DynamicDataContextDriver
     {
+#if DEBUG
+        static AzureDriver()
+        {
+            AppDomain.CurrentDomain.FirstChanceException += (sender, args) =>
+            {
+                if (args.Exception.StackTrace.Contains(typeof(AzureDriver).Namespace))
+                {
+                    System.Diagnostics.Debugger.Launch();
+                }
+            };
+
+        }
+#endif
         /// <summary>
         /// Gets the name of the driver author.
         /// </summary>
@@ -53,16 +67,18 @@ namespace Madd0.AzureStorageDriver
         /// <param name="connectionInfo">The connection info.</param>
         /// <param name="isNewConnection">if set to <c>true</c> [is new connection].</param>
         /// <returns></returns>
-        public override bool ShowConnectionDialog(IConnectionInfo connectionInfo, bool isNewConnection)
+        public override bool ShowConnectionDialog(IConnectionInfo cxInfo, ConnectionDialogOptions dialogOptions)
         {
-            if (isNewConnection)
+            if (dialogOptions.IsNewConnection)
             {
-                var prop = new StorageAccountProperties(connectionInfo);
-                prop.UseHttps = true;
-                prop.NumberOfRows = 100;
+                _ = new StorageAccountProperties(cxInfo)
+                {
+                    UseHttps = true,
+                    NumberOfRows = 100
+                };
             }
 
-            bool? result = new ConnectionDialog(connectionInfo).ShowDialog();
+            bool? result = new ConnectionDialog(cxInfo).ShowDialog();
             return result == true;
         }
 
@@ -80,33 +96,23 @@ namespace Madd0.AzureStorageDriver
             return account1.Equals(account2);
         }
 
-        /// <summary>
-        /// Gets the assemblies to add.
-        /// </summary>
-        /// <returns>A list of assembly names to add in order to execute the current driver.</returns>
-        public override IEnumerable<string> GetAssembliesToAdd()
+#if NETCORE
+        public override IEnumerable<string> GetAssembliesToAdd(IConnectionInfo cxInfo)
         {
             return new string[]
                 {
-                    "Microsoft.WindowsAzure.Storage.dll",
-                    "Microsoft.Data.Services.Client.dll"
+                    "Microsoft.Azure.Cosmos.Table.dll"
                 };
         }
-
-        /// <summary>
-        /// Gets the namespaces to add.
-        /// </summary>
-        /// <returns>A list of namespaces to add in order to execute this driver.</returns>
-        public override IEnumerable<string> GetNamespacesToAdd()
+#else
+        public override IEnumerable<string> GetAssembliesToAdd(IConnectionInfo cxInfo)
         {
             return new string[]
                 {
-                    "Microsoft.WindowsAzure",
-                    "Microsoft.WindowsAzure.Storage",
-                    "Microsoft.WindowsAzure.Storage.Table"
+                    "Microsoft.Azure.CosmosDB.Table.dll"
                 };
         }
-
+#endif
         /// <summary>
         /// Gets the schema and builds the assembly that contains the typed data context.
         /// </summary>
@@ -151,9 +157,9 @@ namespace Madd0.AzureStorageDriver
         /// of the typed data context's constructor.</returns>
         public override ParameterDescriptor[] GetContextConstructorParameters(IConnectionInfo connectionInfo)
         {
-            return new[] 
+            return new[]
             {
-                new ParameterDescriptor("client", "Microsoft.WindowsAzure.Storage.Table.CloudTableClient ")
+                new ParameterDescriptor("client", typeof(CloudTableClient).FullName)
             };
         }
     }

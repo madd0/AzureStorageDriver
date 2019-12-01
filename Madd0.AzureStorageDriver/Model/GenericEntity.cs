@@ -8,8 +8,12 @@
 
 namespace Madd0.AzureStorageDriver
 {
+#if NETCORE
+    using Microsoft.Azure.Cosmos.Table;
+#else
+    using Microsoft.Azure.CosmosDB.Table;
+#endif
     using System.Collections.Generic;
-    using Microsoft.WindowsAzure.Storage.Table;
 
     /// <summary>
     /// Represents a generic entity from table storage.

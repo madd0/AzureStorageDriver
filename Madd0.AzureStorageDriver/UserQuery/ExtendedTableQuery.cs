@@ -8,14 +8,16 @@
 
 namespace Madd0.UserQuery
 {
-    using System;
+#if NETCORE
+    using Microsoft.Azure.Cosmos.Table;
+#else
+    using Microsoft.Azure.CosmosDB.Table;
+    using Microsoft.Azure.Storage;
+#endif
     using System.Collections;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
-    using System.Text;
-    using Microsoft.WindowsAzure.Storage;
-    using Microsoft.WindowsAzure.Storage.Table;
 
     public class ExtendedTableQuery
     {
@@ -39,6 +41,7 @@ namespace Madd0.UserQuery
             _query = table.CreateQuery<TElement>();
         }
 
+#if !NETCORE
         public ICancellableAsyncResult BeginExecuteSegmented(TableContinuationToken currentToken, TableRequestOptions requestOptions, OperationContext operationContext, System.AsyncCallback callback, object state)
         {
             return _query.BeginExecuteSegmented(currentToken, requestOptions, operationContext, callback, state);
@@ -53,6 +56,7 @@ namespace Madd0.UserQuery
         {
             return _query.EndExecuteSegmented(asyncResult);
         }
+#endif
 
         public System.Collections.Generic.IEnumerable<TElement> Execute(TableRequestOptions requestOptions = null, OperationContext operationContext = null)
         {

@@ -1,4 +1,4 @@
-﻿<#@ template language="C#" #>
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
 <#@ import namespace="System" #>
 <#@ import namespace="System.Collections" #>
 <#@ import namespace="System.Collections.Generic" #>
@@ -10,11 +10,11 @@ namespace <#= this.Namespace #>
     using System.Collections.Generic;
     using System.Linq;
     using Madd0.UserQuery;
-    using Microsoft.WindowsAzure;
-    using Microsoft.WindowsAzure.Storage;
-    using Microsoft.WindowsAzure.Storage.Auth;
-    using Microsoft.WindowsAzure.Storage.Table;
-    using Microsoft.WindowsAzure.Storage.Table.DataServices;
+#if NETCORE
+    using Microsoft.Azure.Cosmos.Table;
+#else
+    using Microsoft.Azure.CosmosDB.Table;
+#endif
 
     public class <#= this.TypeName #>
     {

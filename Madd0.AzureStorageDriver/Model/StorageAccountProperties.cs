@@ -11,8 +11,12 @@ namespace Madd0.AzureStorageDriver
     using System.Xml.Linq;
     using LINQPad.Extensibility.DataContext;
     using Madd0.AzureStorageDriver.Properties;
-    using Microsoft.WindowsAzure.Storage;
-    using Microsoft.WindowsAzure.Storage.Auth;
+#if NETCORE
+    using Microsoft.Azure.Cosmos.Table;
+#else
+    using Microsoft.Azure.Storage;
+    using Microsoft.Azure.Storage.Auth;
+#endif
 
     /// <summary>
     /// Wrapper to expose typed properties over ConnectionInfo.DriverData.

@@ -1,7 +1,7 @@
 # README #
 
 This is a plug-in for [LINQPad](http://www.linqpad.net) that enables the 
-execution of queries against [Azure Table Storage](http://msdn.microsoft.com/en-us/library/windowsazure/dd179463.aspx).
+execution of queries against [Azure Table Storage](https://docs.microsoft.com/en-us/azure/cosmos-db/table-storage-overview).
 
 It allows you to add storage accounts as connections in LINQPad. 
 It will list all tables for each account and all columns in each table. 
@@ -17,6 +17,25 @@ Issues and feature requests can be made in the projects
 [issues page on GitHub](https://github.com/madd0/AzureStorageDriver/issues).
 
 ## Versions ##
+
+### v2.0.0 - 2019-12-01 ###
+
+It took a while for a new version to come out, but with [LINQPad 6][3] 
+and big changes in the Azure SDK libraries, I thought it was time.
+And, although functionally not much has changed, I decided that a new 
+distribution channel and total change in the underlying SDK, 
+deserved a new major version.
+
+* **New:** Available as [a Nuget package][4] for LINQPad 6.
+* Switch to _Azure Cosmos DB Table API_
+  * LINQPad 6 plugin uses [Microsoft.Azure.Cosmos.Table 1.0.5][5]
+  * LINQPad 5 plugin uses [Microsoft.Azure.CosmosDB.Table 2.1.2][6]
+    
+    
+_Note: the Azure Storage SDK used by the LINQPad 5 version is in maintenance mode 
+and it will be deprecated soon according to Microsoft. However, since LINQPad 5 
+plugins target .NET Framework 4.6, the switch to the package used by the LINQPad 6
+plugin is not possible._
 
 ### v1.1.0 - 2014-08-20 ###
 
@@ -34,3 +53,7 @@ This is the first public release. Needs real-world testing.
 
 [1]: https://github.com/madd0/AzureStorageDriver/issues/4
 [2]: https://github.com/madd0/AzureStorageDriver/issues/1
+[3]: https://www.linqpad.net/LINQPad6.aspx
+[4]: https://www.nuget.org/packages/Madd0.AzureStorageDriver/
+[5]: https://www.nuget.org/packages/Microsoft.Azure.Cosmos.Table
+[6]: https://www.nuget.org/packages/Microsoft.Azure.CosmosDB.Table
