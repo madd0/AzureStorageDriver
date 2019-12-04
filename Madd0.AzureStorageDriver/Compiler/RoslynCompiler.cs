@@ -54,7 +54,7 @@ namespace Madd0.AzureStorageDriver
 
             if (!results.Success)
             {
-                throw new Exception(string.Format(Exceptions.CannotCompileCode, results.Diagnostics[0].GetMessage(), results.Diagnostics[0].Location.GetLineSpan()));
+                throw new ArgumentException(string.Format(Exceptions.CannotCompileCode, results.Diagnostics[0].GetMessage(), results.Diagnostics[0].Location.GetLineSpan()));
             }
         }
     }

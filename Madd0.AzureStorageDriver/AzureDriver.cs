@@ -56,9 +56,9 @@ namespace Madd0.AzureStorageDriver
         /// <summary>Gets the text to display in the root Schema Explorer node for a given connection info.</summary>
         /// <param name="cxInfo">The connection information.</param>
         /// <returns>The text to display in the root Schema Explorer node for a given connection info</returns>
-        public override string GetConnectionDescription(IConnectionInfo connectionInfo)
+        public override string GetConnectionDescription(IConnectionInfo cxInfo)
         {
-            return new StorageAccountProperties(connectionInfo).DisplayName;
+            return new StorageAccountProperties(cxInfo).DisplayName;
         }
 
         /// <summary>
@@ -85,13 +85,13 @@ namespace Madd0.AzureStorageDriver
         /// <summary>
         /// Determines whether two repositories are equivalent.
         /// </summary>
-        /// <param name="connection1">The connection information of the first repository.</param>
-        /// <param name="connection2">The connection information of the second repository.</param>
+        /// <param name="c1">The connection information of the first repository.</param>
+        /// <param name="c2">The connection information of the second repository.</param>
         /// <returns><c>true</c> if both repositories use the same account name; <c>false</c> otherwise.</returns>
-        public override bool AreRepositoriesEquivalent(IConnectionInfo connection1, IConnectionInfo connection2)
+        public override bool AreRepositoriesEquivalent(IConnectionInfo c1, IConnectionInfo c2)
         {
-            var account1 = (string)connection1.DriverData.Element("AccountName") ?? string.Empty;
-            var account2 = (string)connection2.DriverData.Element("AccountName") ?? string.Empty;
+            var account1 = (string)c1.DriverData.Element("AccountName") ?? string.Empty;
+            var account2 = (string)c2.DriverData.Element("AccountName") ?? string.Empty;
 
             return account1.Equals(account2);
         }
@@ -116,30 +116,30 @@ namespace Madd0.AzureStorageDriver
         /// <summary>
         /// Gets the schema and builds the assembly that contains the typed data context.
         /// </summary>
-        /// <param name="connectionInfo">The connection information.</param>
+        /// <param name="cxInfo">The connection information.</param>
         /// <param name="assemblyToBuild">The assembly to build.</param>
         /// <param name="namepace">The namespace to be used in the generated code.</param>
         /// <param name="typeName">Name of the type of the typed data context.</param>
         /// <returns>A list of <see cref="ExplorerItem"/> instaces that describes the current schema.</returns>
-        public override List<ExplorerItem> GetSchemaAndBuildAssembly(IConnectionInfo connectionInfo, AssemblyName assemblyToBuild, ref string @namespace, ref string typeName)
+        public override List<ExplorerItem> GetSchemaAndBuildAssembly(IConnectionInfo cxInfo, AssemblyName assemblyToBuild, ref string nameSpace, ref string typeName)
         {
             // The helper class SchemaBuilder will do the heavy lifting
             return SchemaBuilder.GetSchemaAndBuildAssembly(
-                new StorageAccountProperties(connectionInfo),
+                new StorageAccountProperties(cxInfo),
                 this.GetDriverFolder(),
                 assemblyToBuild,
-                @namespace,
+                nameSpace,
                 typeName);
         }
 
         /// <summary>
         /// Gets the context constructor arguments.
         /// </summary>
-        /// <param name="connectionInfo">The connection info.</param>
+        /// <param name="cxInfo">The connection info.</param>
         /// <returns>An ordered collection of objects to pass to the data context as arguments.</returns>
-        public override object[] GetContextConstructorArguments(IConnectionInfo connectionInfo)
+        public override object[] GetContextConstructorArguments(IConnectionInfo cxInfo)
         {
-            var properties = new StorageAccountProperties(connectionInfo);
+            var properties = new StorageAccountProperties(cxInfo);
 
             var storageAccount = properties.GetStorageAccount();
 
@@ -152,10 +152,10 @@ namespace Madd0.AzureStorageDriver
         /// <summary>
         /// Gets the context constructor parameters.
         /// </summary>
-        /// <param name="connectionInfo">The connection info.</param>
+        /// <param name="cxInfo">The connection info.</param>
         /// <returns>A list of <see cref="ParameterDescriptor"/> objects that describe the parameters
         /// of the typed data context's constructor.</returns>
-        public override ParameterDescriptor[] GetContextConstructorParameters(IConnectionInfo connectionInfo)
+        public override ParameterDescriptor[] GetContextConstructorParameters(IConnectionInfo cxInfo)
         {
             return new[]
             {
