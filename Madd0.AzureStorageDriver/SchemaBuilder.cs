@@ -17,9 +17,12 @@ namespace Madd0.AzureStorageDriver
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Net;
     using System.Reflection;
+    using System.Threading.Tasks;
     using LINQPad.Extensibility.DataContext;
     using Madd0.AzureStorageDriver.Properties;
+
 
     /// <summary>
     /// Provides the methods necessary to determining the storage account's schema and to building
@@ -65,8 +68,12 @@ namespace Madd0.AzureStorageDriver
         /// storage model.</returns>
         private static IEnumerable<CloudTable> GetModel(StorageAccountProperties properties)
         {
-            var tableClient = properties.GetStorageAccount().CreateCloudTableClient();
+            // make sure that we can make at least ModelLoadMaxParallelism concurrent
+            // cals to azure table storage
+            ServicePointManager.DefaultConnectionLimit = properties.ModelLoadMaxParallelism;
 
+            var tableClient = properties.GetStorageAccount().CreateCloudTableClient();
+            
             // First get a list of all tables
             var model = (from tableName in tableClient.ListTables()
                          select new CloudTable
@@ -74,10 +81,16 @@ namespace Madd0.AzureStorageDriver
                              Name = tableName.Name
                          }).ToList();
 
-            // Then go through them
-            foreach (var table in model)
+            var options = new ParallelOptions()
             {
-                var tableColumns = tableClient.GetTableReference(table.Name).ExecuteQuery(new TableQuery().Take(properties.NumberOfRows))
+                MaxDegreeOfParallelism = properties.ModelLoadMaxParallelism
+            };
+
+            Parallel.ForEach(model, options, table =>
+            {
+                var threadTableClient = properties.GetStorageAccount().CreateCloudTableClient();
+
+                var tableColumns = threadTableClient.GetTableReference(table.Name).ExecuteQuery(new TableQuery().Take(properties.NumberOfRows))
                     .SelectMany(row => row.Properties)
                     .GroupBy(column => column.Key)
                     .Select(grp => new TableColumn
@@ -95,8 +108,8 @@ namespace Madd0.AzureStorageDriver
                 };
 
                 table.Columns = tableColumns.Concat(baseColumns).ToArray();
-            }
-
+            });
+            
             return model;
         }
 

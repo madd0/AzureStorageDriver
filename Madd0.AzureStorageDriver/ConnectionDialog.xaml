@@ -20,19 +20,19 @@
             </Style.Triggers>
         </Style>
     </Window.Resources>
-    <StackPanel Margin="7">
 
+    <StackPanel Margin="7">
         <Label Padding="0 0 0 3">Storage account name:</Label>
 
         <DockPanel>
             <CheckBox x:Name="UseDevelopmentStorage"
-                      Margin="30 0 0 0"
+                      Margin="30 0 0 5"
                       VerticalAlignment="Center"
                       Content="Use _development storage"
                       DockPanel.Dock="Right"
                       IsChecked="{Binding UseLocalStorage}"
                       TabIndex="2" />
-            <TextBox TabIndex="1" Text="{Binding AccountName}" />
+            <TextBox TabIndex="1" Margin="0 0 0 5" Text="{Binding AccountName}" />
         </DockPanel>
 
         <Label Padding="0 0 0 3">Storage account key:</Label>
@@ -53,34 +53,65 @@
                     </Style.Triggers>
                 </Style>
             </Expander.Style>
-            <StackPanel Margin="23 5 0 0">
+            <Grid Margin="23 5 0 0">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
                 <CheckBox Margin="0"
                           Content="_Use HTTPS"
                           IsChecked="{Binding UseHttps}"
                           TabIndex="4" />
-                <StackPanel Margin="0 10" Orientation="Horizontal">
-                    <TextBlock>Number of lines to sample:</TextBlock>
-                    <TextBox Width="50"
-                             Margin="5 0"
+
+                <TextBlock Grid.Row="1" Margin="0 10 0 5">Number of lines to sample:</TextBlock>
+                <TextBox Grid.Row="1" Grid.Column="1"
+                         Width="50"
+                             Margin="5 10 5 5"
                              Text="{Binding NumberOfRows}"
                              TextAlignment="Right" />
-                    <Grid>
-                        <Grid.ToolTip>
-                            <ToolTip>
-                                <TextBlock>The number of lines that will be read in order to determine the schema of an Azure Table.</TextBlock>
-                            </ToolTip>
-                        </Grid.ToolTip>
-                        <Ellipse Width="15"
+                <Grid Grid.Row="1" Grid.Column="2" Margin="0 10 0 5">
+                    <Grid.ToolTip>
+                        <ToolTip>
+                            <TextBlock>The number of lines that will be read in order to determine the schema of an Azure Table.</TextBlock>
+                        </ToolTip>
+                    </Grid.ToolTip>
+                    <Ellipse Width="15"
                                  Height="15"
                                  Fill="#3CA1C8" />
-                        <TextBlock Margin="0 1 0 0"
+                    <TextBlock Margin="0 1 0 0"
                                    HorizontalAlignment="Center"
                                    FontWeight="Bold"
                                    Foreground="White"
                                    Text="?" />
-                    </Grid>
-                </StackPanel>
-            </StackPanel>
+                </Grid>
+
+                <TextBlock  Grid.Row="2" Margin="0 5 0 10">Schema loading parallelism:</TextBlock>
+                <TextBox Grid.Row="2" Grid.Column="1" Width="50"
+                             Margin="5 5 5 10"
+                             Text="{Binding ModelLoadMaxParallelism}"
+                             TextAlignment="Right" />
+                <Grid Grid.Row="2" Grid.Column="3" Margin="0 5 0 10">
+                    <Grid.ToolTip>
+                        <ToolTip>
+                            <TextBlock>The number of concurrent calls that will be made to Azure Table Storage to determine the columns available for each table.</TextBlock>
+                        </ToolTip>
+                    </Grid.ToolTip>
+                    <Ellipse Width="15"
+                        Height="15"
+                        Fill="#3CA1C8" />
+                    <TextBlock Margin="0 1 0 0"
+                        HorizontalAlignment="Center"
+                        FontWeight="Bold"
+                        Foreground="White"
+                        Text="?" />
+                </Grid>
+            </Grid>
         </Expander>
 
         <DockPanel Margin="0 10 0 0" LastChildFill="False">
