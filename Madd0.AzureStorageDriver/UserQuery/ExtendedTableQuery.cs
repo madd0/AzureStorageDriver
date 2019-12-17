@@ -29,15 +29,14 @@ namespace Madd0.UserQuery
         }
 
     }
-    public class ExtendedTableQuery<TElement> : ExtendedTableQuery, IEnumerable, IEnumerable<TElement>, IQueryable, IQueryable<TElement>
+    public class ExtendedTableQuery<TElement> : ExtendedTableQuery, IQueryable<TElement>
         where TElement : ITableEntity, new()
     {
-        private CloudTable _table;
-        private TableQuery<TElement> _query;
+        private readonly TableQuery<TElement> _query;
 
         public ExtendedTableQuery(CloudTable table)
         {
-            _table = table;
+            this.CloudTable = table;
             _query = table.CreateQuery<TElement>();
         }
 
@@ -173,12 +172,6 @@ namespace Madd0.UserQuery
             }
         }
 
-        public CloudTable CloudTable
-        {
-            get
-            {
-                return _table;
-            }
-        }
+        public CloudTable CloudTable { get; private set; }
     }
 }

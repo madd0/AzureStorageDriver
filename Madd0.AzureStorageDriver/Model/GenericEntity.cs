@@ -27,10 +27,6 @@ namespace Madd0.AzureStorageDriver
     /// </remarks>
     public class GenericEntity : TableEntity
     {
-        /// <summary>
-        /// Holds the property data.
-        /// </summary>
-        private Dictionary<string, string> properties = new Dictionary<string, string>();
 
         /// <summary>
         /// Gets or sets the table name.
@@ -46,25 +42,22 @@ namespace Madd0.AzureStorageDriver
         /// Gets the list of properties of a table entity (except for PartitionKey, RowKey and
         /// Timestamp) and their string values.
         /// </summary>
-        public Dictionary<string, string> Properties
-        {
-            get { return this.properties; }
-        }
+        public Dictionary<string, string> Properties { get; } = new Dictionary<string, string>();
 
         /// <summary>
-        /// Gets or sets the <see cref="System.String"/> with the specified property.
+        /// Gets or sets the <see cref="string"/> with the specified property.
         /// </summary>
         /// <param name="property">The name of the property.</param>
         public string this[string property]
         {
             get
             {
-                return this.properties[property];
+                return this.Properties[property];
             }
 
             set
             {
-                this.properties[property] = value;
+                this.Properties[property] = value;
             }
         }
     }
