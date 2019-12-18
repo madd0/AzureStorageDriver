@@ -32,11 +32,16 @@
                       DockPanel.Dock="Right"
                       IsChecked="{Binding UseLocalStorage}"
                       TabIndex="2" />
-            <TextBox x:Name="AccountName" TabIndex="1" Margin="0 0 0 5" Text="{Binding AccountName}" />
+            <TextBox x:Name="AccountName"
+                     Margin="0 0 0 5"
+                     TabIndex="1"
+                     Text="{Binding AccountName}" />
         </DockPanel>
 
         <Label Padding="0 0 0 3" Target="{Binding ElementName=AccountKey}">Storage account _key:</Label>
-        <TextBox x:Name="AccountKey" TabIndex="3" Text="{Binding AccountKey}" />
+        <TextBox x:Name="AccountKey"
+                 TabIndex="3"
+                 Text="{Binding AccountKey}" />
 
         <CheckBox Margin="0 10"
                   Content="_Remember this connection"
@@ -70,11 +75,11 @@
 
                 <ComboBox x:Name="AzureEnvironment"
                           Grid.Column="1"
-                          Margin="5 0 5 5"
                           Width="100"
+                          Margin="5 0 5 5"
+                          DisplayMemberPath="Name"
                           ItemsSource="{Binding Environments}"
-                          SelectedItem="{Binding AzureEnvironment}"
-                          DisplayMemberPath="Name" />
+                          SelectedItem="{Binding AzureEnvironment}" />
 
                 <CheckBox Grid.Column="2"
                           Margin="0 3"
@@ -82,51 +87,68 @@
                           IsChecked="{Binding UseHttps}"
                           TabIndex="4" />
 
-                <Label Grid.Row="1" Padding="0 5" Target="{Binding ElementName=SampleLines}">Number of lines to _sample:</Label>
+                <Label Grid.Row="1"
+                       Padding="0 5"
+                       Target="{Binding ElementName=SampleLines}">
+                    Number of lines to _sample:
+                </Label>
                 <TextBox x:Name="SampleLines"
-                    Grid.Row="1" Grid.Column="1"
+                         Grid.Row="1"
+                         Grid.Column="1"
                          Width="50"
+                         Margin="5"
                          HorizontalAlignment="Right"
-                             Margin="5"
-                             Text="{Binding NumberOfRows}"
-                             TextAlignment="Right" />
-                <Grid Grid.Row="1" Grid.Column="2" Margin="0 5" HorizontalAlignment="Left">
+                         Text="{Binding NumberOfRows}"
+                         TextAlignment="Right" />
+                <Grid Grid.Row="1"
+                      Grid.Column="2"
+                      Margin="0 5"
+                      HorizontalAlignment="Left">
                     <Grid.ToolTip>
                         <ToolTip>
                             <TextBlock>The number of lines that will be read in order to determine the schema of an Azure Table.</TextBlock>
                         </ToolTip>
                     </Grid.ToolTip>
                     <Ellipse Width="15"
-                                 Height="15"
-                                 Fill="#3CA1C8" />
+                             Height="15"
+                             Fill="#3CA1C8" />
                     <TextBlock Margin="0 1 0 0"
-                                   HorizontalAlignment="Center"
-                                   FontWeight="Bold"
-                                   Foreground="White"
-                                   Text="?" />
+                               HorizontalAlignment="Center"
+                               FontWeight="Bold"
+                               Foreground="White"
+                               Text="?" />
                 </Grid>
 
-                <Label Grid.Row="2" Padding="0 5 0 10" Target="{Binding ElementName=Parallelism}">Schema loading _parallelism:</Label>
+                <Label Grid.Row="2"
+                       Padding="0 5 0 10"
+                       Target="{Binding ElementName=Parallelism}">
+                    Schema loading _parallelism:
+                </Label>
                 <TextBox x:Name="Parallelism"
-                    Grid.Row="2" Grid.Column="1" Width="50"
-                             Margin="5 5 5 10"
+                         Grid.Row="2"
+                         Grid.Column="1"
+                         Width="50"
+                         Margin="5 5 5 10"
                          HorizontalAlignment="Right"
-                             Text="{Binding ModelLoadMaxParallelism}"
-                             TextAlignment="Right" />
-                <Grid Grid.Row="2" Grid.Column="3" Margin="0 5 0 10" HorizontalAlignment="Left">
+                         Text="{Binding ModelLoadMaxParallelism}"
+                         TextAlignment="Right" />
+                <Grid Grid.Row="2"
+                      Grid.Column="3"
+                      Margin="0 5 0 10"
+                      HorizontalAlignment="Left">
                     <Grid.ToolTip>
                         <ToolTip>
                             <TextBlock>The number of concurrent calls that will be made to Azure Table Storage to determine the columns available for each table.</TextBlock>
                         </ToolTip>
                     </Grid.ToolTip>
                     <Ellipse Width="15"
-                        Height="15"
-                        Fill="#3CA1C8" />
+                             Height="15"
+                             Fill="#3CA1C8" />
                     <TextBlock Margin="0 1 0 0"
-                        HorizontalAlignment="Center"
-                        FontWeight="Bold"
-                        Foreground="White"
-                        Text="?" />
+                               HorizontalAlignment="Center"
+                               FontWeight="Bold"
+                               Foreground="White"
+                               Text="?" />
                 </Grid>
             </Grid>
         </Expander>
