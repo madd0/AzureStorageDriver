@@ -22,7 +22,7 @@
     </Window.Resources>
 
     <StackPanel Margin="7">
-        <Label Padding="0 0 0 3">Storage account name:</Label>
+        <Label Padding="0 0 0 3" Target="{Binding ElementName=AccountName}">Storage account _name:</Label>
 
         <DockPanel>
             <CheckBox x:Name="UseDevelopmentStorage"
@@ -32,11 +32,11 @@
                       DockPanel.Dock="Right"
                       IsChecked="{Binding UseLocalStorage}"
                       TabIndex="2" />
-            <TextBox TabIndex="1" Margin="0 0 0 5" Text="{Binding AccountName}" />
+            <TextBox x:Name="AccountName" TabIndex="1" Margin="0 0 0 5" Text="{Binding AccountName}" />
         </DockPanel>
 
-        <Label Padding="0 0 0 3">Storage account key:</Label>
-        <TextBox TabIndex="3" Text="{Binding AccountKey}" />
+        <Label Padding="0 0 0 3" Target="{Binding ElementName=AccountKey}">Storage account _key:</Label>
+        <TextBox x:Name="AccountKey" TabIndex="3" Text="{Binding AccountKey}" />
 
         <CheckBox Margin="0 10"
                   Content="_Remember this connection"
@@ -58,24 +58,39 @@
                     <RowDefinition />
                     <RowDefinition />
                     <RowDefinition />
+                    <RowDefinition />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <CheckBox Margin="0"
+
+                <Label Padding="0 2" Target="{Binding ElementName=AzureEnvironment}">Azure _environment:</Label>
+
+                <ComboBox x:Name="AzureEnvironment"
+                          Grid.Column="1"
+                          Margin="5 0 5 5"
+                          Width="100"
+                          ItemsSource="{Binding Environments}"
+                          SelectedItem="{Binding AzureEnvironment}"
+                          DisplayMemberPath="Name" />
+
+                <CheckBox Grid.Column="2"
+                          Margin="0 3"
                           Content="_Use HTTPS"
                           IsChecked="{Binding UseHttps}"
                           TabIndex="4" />
 
-                <TextBlock Grid.Row="1" Margin="0 10 0 5">Number of lines to sample:</TextBlock>
-                <TextBox Grid.Row="1" Grid.Column="1"
+                <Label Grid.Row="1" Padding="0 5" Target="{Binding ElementName=SampleLines}">Number of lines to _sample:</Label>
+                <TextBox x:Name="SampleLines"
+                    Grid.Row="1" Grid.Column="1"
                          Width="50"
-                             Margin="5 10 5 5"
+                         HorizontalAlignment="Right"
+                             Margin="5"
                              Text="{Binding NumberOfRows}"
                              TextAlignment="Right" />
-                <Grid Grid.Row="1" Grid.Column="2" Margin="0 10 0 5">
+                <Grid Grid.Row="1" Grid.Column="2" Margin="0 5" HorizontalAlignment="Left">
                     <Grid.ToolTip>
                         <ToolTip>
                             <TextBlock>The number of lines that will be read in order to determine the schema of an Azure Table.</TextBlock>
@@ -91,12 +106,14 @@
                                    Text="?" />
                 </Grid>
 
-                <TextBlock  Grid.Row="2" Margin="0 5 0 10">Schema loading parallelism:</TextBlock>
-                <TextBox Grid.Row="2" Grid.Column="1" Width="50"
+                <Label Grid.Row="2" Padding="0 5 0 10" Target="{Binding ElementName=Parallelism}">Schema loading _parallelism:</Label>
+                <TextBox x:Name="Parallelism"
+                    Grid.Row="2" Grid.Column="1" Width="50"
                              Margin="5 5 5 10"
+                         HorizontalAlignment="Right"
                              Text="{Binding ModelLoadMaxParallelism}"
                              TextAlignment="Right" />
-                <Grid Grid.Row="2" Grid.Column="3" Margin="0 5 0 10">
+                <Grid Grid.Row="2" Grid.Column="3" Margin="0 5 0 10" HorizontalAlignment="Left">
                     <Grid.ToolTip>
                         <ToolTip>
                             <TextBlock>The number of concurrent calls that will be made to Azure Table Storage to determine the columns available for each table.</TextBlock>
@@ -137,6 +154,5 @@
                 _OK
             </Button>
         </DockPanel>
-
     </StackPanel>
 </Window>

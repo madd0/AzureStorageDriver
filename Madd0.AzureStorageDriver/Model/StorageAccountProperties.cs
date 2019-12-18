@@ -8,6 +8,8 @@
 
 namespace Madd0.AzureStorageDriver
 {
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Xml.Linq;
     using LINQPad.Extensibility.DataContext;
     using Madd0.AzureStorageDriver.Properties;
@@ -145,14 +147,40 @@ namespace Madd0.AzureStorageDriver
         /// </summary>
         public int ModelLoadMaxParallelism
         {
-            get { return (int?)this._driverData.Element("ModelLoadMaxParallelism") ??
-                    (System.Environment.ProcessorCount * 2); }
+            get
+            {
+                return (int?)this._driverData.Element("ModelLoadMaxParallelism") ??
+                  (System.Environment.ProcessorCount * 2);
+            }
             set
             {
                 this._driverData.SetElementValue("ModelLoadMaxParallelism", value);
             }
         }
-        
+
+        public IEnumerable<AzureEnvironment> Environments => AzureEnvironment.KnownEnvironments;
+
+        public AzureEnvironment AzureEnvironment
+        {
+            get
+            {
+                var selected = (string)_driverData.Element("AzureEnvironment");
+
+                if (!string.IsNullOrEmpty(selected))
+                {
+                    return AzureEnvironment.Environments[selected];
+                }
+                else
+                {
+                    return AzureEnvironment.KnownEnvironments.First();
+                }
+            }
+            set
+            {
+                this._driverData.SetElementValue("AzureEnvironment", value.Name);
+            }
+        }
+
         /// <summary>
         /// Gets a <see cref="CloudStorageAccount"/> instace for the current connection.
         /// </summary>
@@ -166,7 +194,10 @@ namespace Madd0.AzureStorageDriver
             }
             else
             {
-                return new CloudStorageAccount(new StorageCredentials(this.AccountName, this.AccountKey), this.UseHttps);
+                return new CloudStorageAccount(
+                    new StorageCredentials(this.AccountName, this.AccountKey),
+                    this.AzureEnvironment.StorageEndpointSuffix,
+                    this.UseHttps);
             }
         }
 

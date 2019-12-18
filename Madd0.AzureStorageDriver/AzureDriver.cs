@@ -58,7 +58,16 @@ namespace Madd0.AzureStorageDriver
         /// <returns>The text to display in the root Schema Explorer node for a given connection info</returns>
         public override string GetConnectionDescription(IConnectionInfo cxInfo)
         {
-            return new StorageAccountProperties(cxInfo).DisplayName;
+            var accountProperties = new StorageAccountProperties(cxInfo);
+            
+            var description = accountProperties.DisplayName;
+
+            if (accountProperties.AzureEnvironment != AzureEnvironment.AzureGlobalCloud)
+            {
+                description += $" ({accountProperties.AzureEnvironment.Name})";
+            }
+
+            return description;
         }
 
         /// <summary>
