@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Madd0.AzureStorageDriver.Model
+namespace Madd0.AzureStorageDriver
 {
     // From: https://github.com/Azure/azure-libraries-for-net/blob/master/src/ResourceManagement/ResourceManager/AzureEnvironment.cs
     public class AzureEnvironment

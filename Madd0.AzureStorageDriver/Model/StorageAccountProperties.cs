@@ -12,7 +12,6 @@ namespace Madd0.AzureStorageDriver
     using System.Linq;
     using System.Xml.Linq;
     using LINQPad.Extensibility.DataContext;
-    using Madd0.AzureStorageDriver.Model;
     using Madd0.AzureStorageDriver.Properties;
 #if NETCORE
     using Microsoft.Azure.Cosmos.Table;
@@ -103,19 +102,6 @@ namespace Madd0.AzureStorageDriver
             set
             {
                 this._driverData.SetElementValue("UseHttps", value);
-            }
-        }
-
-        public bool ChinaAzure
-        {
-            get
-            {
-                return (bool?)this._driverData.Element("ChinaAzure") ?? false;
-            }
-
-            set
-            {
-                this._driverData.SetElementValue("ChinaAzure", value);
             }
         }
 
