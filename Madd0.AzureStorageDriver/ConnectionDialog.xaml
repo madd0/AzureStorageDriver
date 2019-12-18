@@ -58,13 +58,25 @@
                     <RowDefinition />
                     <RowDefinition />
                     <RowDefinition />
+                    <RowDefinition />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <CheckBox Margin="0"
+
+                <Label Padding="0 0 0 5">Azure _environment:</Label>
+
+                <ComboBox Grid.Column="1"
+                          Margin="5 0 5 5"
+                          Width="100"
+                          ItemsSource="{Binding Environments}"
+                          SelectedItem="{Binding AzureEnvironment}"
+                          DisplayMemberPath="Name" />
+
+                <CheckBox Grid.Column="2"
+                          Margin="0 3"
                           Content="_Use HTTPS"
                           IsChecked="{Binding UseHttps}"
                           TabIndex="4" />
@@ -72,10 +84,11 @@
                 <TextBlock Grid.Row="1" Margin="0 10 0 5">Number of lines to sample:</TextBlock>
                 <TextBox Grid.Row="1" Grid.Column="1"
                          Width="50"
-                             Margin="5 10 5 5"
+                         HorizontalAlignment="Right"
+                             Margin="5"
                              Text="{Binding NumberOfRows}"
                              TextAlignment="Right" />
-                <Grid Grid.Row="1" Grid.Column="2" Margin="0 10 0 5">
+                <Grid Grid.Row="1" Grid.Column="2" Margin="0 5" HorizontalAlignment="Left">
                     <Grid.ToolTip>
                         <ToolTip>
                             <TextBlock>The number of lines that will be read in order to determine the schema of an Azure Table.</TextBlock>
@@ -94,9 +107,10 @@
                 <TextBlock  Grid.Row="2" Margin="0 5 0 10">Schema loading parallelism:</TextBlock>
                 <TextBox Grid.Row="2" Grid.Column="1" Width="50"
                              Margin="5 5 5 10"
+                         HorizontalAlignment="Right"
                              Text="{Binding ModelLoadMaxParallelism}"
                              TextAlignment="Right" />
-                <Grid Grid.Row="2" Grid.Column="3" Margin="0 5 0 10">
+                <Grid Grid.Row="2" Grid.Column="3" Margin="0 5 0 10" HorizontalAlignment="Left">
                     <Grid.ToolTip>
                         <ToolTip>
                             <TextBlock>The number of concurrent calls that will be made to Azure Table Storage to determine the columns available for each table.</TextBlock>
@@ -137,6 +151,5 @@
                 _OK
             </Button>
         </DockPanel>
-
     </StackPanel>
 </Window>
