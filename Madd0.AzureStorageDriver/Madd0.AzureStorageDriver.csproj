@@ -15,9 +15,9 @@
     <Product>Azure Table Storage Driver</Product>
     <Title>Azure Table Storage Driver</Title>
     <Copyright>Copyright © 2012 Mauricio DIAZ ORLICH</Copyright>
-    <Version>2.0.0</Version>
-    <AssemblyVersion>2.0.0.0</AssemblyVersion>
-    <FileVersion>2.0.0.0</FileVersion>
+    <Version>2.1.0</Version>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+    <FileVersion>2.1.0.0</FileVersion>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/madd0/AzureStorageDriver</PackageProjectUrl>
     <RepositoryUrl>https://github.com/madd0/AzureStorageDriver.git</RepositoryUrl>

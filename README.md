@@ -20,6 +20,21 @@ Issues and feature requests can be made in the projects
 
 ## Versions ##
 
+### v2.1.0 - 2020-01-05 ###
+
+Happy new year! After last month's update, I decided to work on some really 
+old pending PRs, do some cleanup and tackle [#19][7] which came in on the first day of the year.
+
+* Integrate PR [#8: add support for china azure(code name:mooncake)][8]
+  * Adds support for China, US Government and German "clouds."
+  * Found by expanding the _Advanced_ section in the connection properties dialog.
+* Integrate PR [#12: Enable parallel schema loading ][9]
+  * Speeds up loading of storage accounts with multiple tables.
+  * Max number of parallel queries can be set in the  _Advanced_ section in the connection properties dialog.
+* Target .NET Core 3.1
+  * The Nuget package now includes .NET 4.6, .NET Core 3.0 _and_ .NET Core 3.1 versions.
+  * The .NET Core 3.1 version of the DLL should prevent issues such as described in [#19: When .NET Core 3.1 installed, "Cannot compile typed context" error][7]
+
 ### v2.0.0 - 2019-12-01 ###
 
 It took a while for a new version to come out, but with [LINQPad 6][3] 
@@ -59,3 +74,6 @@ This is the first public release. Needs real-world testing.
 [4]: https://www.nuget.org/packages/Madd0.AzureStorageDriver/
 [5]: https://www.nuget.org/packages/Microsoft.Azure.Cosmos.Table
 [6]: https://www.nuget.org/packages/Microsoft.Azure.CosmosDB.Table
+[7]: https://github.com/madd0/AzureStorageDriver/issues/19
+[8]: https://github.com/madd0/AzureStorageDriver/pull/8
+[9]: https://github.com/madd0/AzureStorageDriver/pull/12
