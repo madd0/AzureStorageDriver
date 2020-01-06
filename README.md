@@ -11,7 +11,7 @@ the schema of each table. For the same reason, any value types are made
 `Nullable<>` since it cannot be guaranteed that they will have a value
 for a given row.
 
-[![Build Status](https://dev.azure.com/madd0/AzureStorageDriver/_apis/build/status/madd0.AzureStorageDriver?branchName=master)](https://dev.azure.com/madd0/AzureStorageDriver/_build/latest?definitionId=4&branchName=master)
+![Nuget](https://img.shields.io/nuget/v/Madd0.AzureStorageDriver?logo=nuget) [![Build Status](https://dev.azure.com/madd0/AzureStorageDriver/_apis/build/status/madd0.AzureStorageDriver?branchName=master)](https://dev.azure.com/madd0/AzureStorageDriver/_build/latest?definitionId=4&branchName=master)
 
 ## Issues and Feature requests ##
 
