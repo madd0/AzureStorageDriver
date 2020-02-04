@@ -20,6 +20,14 @@ Issues and feature requests can be made in the projects
 
 ## Versions ##
 
+### v2.1.1 - 2020-02-04 ###
+
+* Workaround for problem described in [#20][10]
+  * The .NET Core 3.1 driver was getting .NET Core 3.0 references, which prevented it from compiling the generated code because
+    the driver itself was a reference and therefore needed 3.1 references.
+  * As a workaround, the driver is no longer a required reference for the generated code, which is compatible with either
+    .NET Core 3.0 or 3.1, so no matter what runtime LinqPad provides, the code should compile.
+
 ### v2.1.0 - 2020-01-05 ###
 
 Happy new year! After last month's update, I decided to work on some really 
@@ -77,3 +85,4 @@ This is the first public release. Needs real-world testing.
 [7]: https://github.com/madd0/AzureStorageDriver/issues/19
 [8]: https://github.com/madd0/AzureStorageDriver/pull/8
 [9]: https://github.com/madd0/AzureStorageDriver/pull/12
+[10]: https://github.com/madd0/AzureStorageDriver/issues/20
