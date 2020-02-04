@@ -72,6 +72,7 @@
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
+    <EmbeddedResource Include="UserQuery\ExtendedTableQuery.cs" Link="ExtendedTableQuery.cs" />
   </ItemGroup>
 
   <ItemGroup>

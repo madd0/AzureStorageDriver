@@ -135,7 +135,6 @@ namespace Madd0.AzureStorageDriver
             // The helper class SchemaBuilder will do the heavy lifting
             return SchemaBuilder.GetSchemaAndBuildAssembly(
                 new StorageAccountProperties(cxInfo),
-                this.GetDriverFolder(),
                 assemblyToBuild,
                 nameSpace,
                 typeName);

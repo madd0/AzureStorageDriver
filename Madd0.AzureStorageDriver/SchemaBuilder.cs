@@ -37,12 +37,11 @@ namespace Madd0.AzureStorageDriver
         /// Gets the schema and builds the assembly.
         /// </summary>
         /// <param name="properties">The current configuration.</param>
-        /// <param name="driverFolder">The driver folder. Used to resolve dependencies.</param>
         /// <param name="name">The <see cref="AssemblyName"/> instace of the assembly being created.</param>
         /// <param name="namepace">The namespace to be used in the generated code.</param>
         /// <param name="typeName">Name of the type of the typed data context.</param>
         /// <returns>A list of <see cref="ExplorerItem"/> instaces that describes the current schema.</returns>
-        public static List<ExplorerItem> GetSchemaAndBuildAssembly(StorageAccountProperties properties, string driverFolder, AssemblyName name, string @namepace, string typeName)
+        public static List<ExplorerItem> GetSchemaAndBuildAssembly(StorageAccountProperties properties, AssemblyName name, string @namepace, string typeName)
         {
             // Get the model from Azure storage
             var model = GetModel(properties);
@@ -51,7 +50,7 @@ namespace Madd0.AzureStorageDriver
             var code = GenerateCode(typeName, @namepace, model);
 
             // And compile the code into the assembly
-            BuildAssembly(name, driverFolder, code);
+            BuildAssembly(name, code);
 
             // Generate the schema for LINQPad
             List<ExplorerItem> schema = GetSchema(model);
@@ -130,22 +129,38 @@ namespace Madd0.AzureStorageDriver
                 Tables = model
             };
 
-            return codeGenerator.TransformText();
+            // As a workaround for compiling issues when referencing the driver DLL itself to
+            // access the base ExtendedTableQuery class, the code will be used instead in the
+            // dynamic assembly.
+            var baseClass = ReadEmbeddedBaseClassCode();
+
+            var sourceCode = baseClass + codeGenerator.TransformText();
+            LINQPad.Util.Break();
+
+            return sourceCode;
+        }
+
+        private static string ReadEmbeddedBaseClassCode()
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            var resourceName = "Madd0.AzureStorageDriver.ExtendedTableQuery.cs";
+
+            using var reader = new StreamReader(assembly.GetManifestResourceStream(resourceName));
+
+            return reader.ReadToEnd();
         }
 
         /// <summary>
         /// Builds the assembly described by the <see cref="AssemblyName"/>.
         /// </summary>
         /// <param name="name">The <see cref="AssemblyName"/> instace of the assembly being created.</param>
-        /// <param name="driverFolder">The driver folder. Used to resolve dependencies.</param>
         /// <param name="code">The code of the typed data context.</param>
-        private static void BuildAssembly(AssemblyName name, string driverFolder, string code)
+        private static void BuildAssembly(AssemblyName name, string code)
         {
             ICompiler compiler;
 
             var dependencies = new List<string>
             {
-                Path.Combine(driverFolder, "Madd0.AzureStorageDriver.dll"),
                 typeof(TableQuery).Assembly.Location
             };
 #if NETCORE
@@ -154,6 +169,8 @@ namespace Madd0.AzureStorageDriver
             compiler = new CodeDomCompiler();
             dependencies.Add("System.dll");
             dependencies.Add("System.Core.dll");
+            dependencies.Add("System.Xml.dll");
+            dependencies.Add(typeof(Microsoft.Azure.Storage.OperationContext).Assembly.Location);
 #endif
             compiler.Compile(code, name, dependencies);
         }
