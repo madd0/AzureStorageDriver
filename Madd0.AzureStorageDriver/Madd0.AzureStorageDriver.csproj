@@ -34,6 +34,7 @@
   <ItemGroup>
     <PackageReference Include="LINQPad.Reference" Version="1.*" />
     <PackageReference Include="SonarAnalyzer.CSharp" Version="8.*" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.*" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net46'">
