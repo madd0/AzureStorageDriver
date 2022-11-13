@@ -20,6 +20,14 @@ Issues and feature requests can be made in the projects
 
 ## Versions ##
 
+### v2.1.2 - 2022-11-13 ###
+
+* Updated dependency versions:
+  * LINQPad.Reference: 1.1.0 -> 1.3.0
+  * SonarAnalyzer.CSharp: 8.0.0.9566 -> 8.48.0.56517
+  * Microsoft.CodeAnalysis.CSharp: 3.3.1 -> 3.11.0
+
+* Added explicit reference to Newtonsoft.Json to work around issue [#22][11]
 ### v2.1.1 - 2020-02-04 ###
 
 * Workaround for problem described in [#20][10]
@@ -86,3 +94,4 @@ This is the first public release. Needs real-world testing.
 [8]: https://github.com/madd0/AzureStorageDriver/pull/8
 [9]: https://github.com/madd0/AzureStorageDriver/pull/12
 [10]: https://github.com/madd0/AzureStorageDriver/issues/20
+[11]: https://github.com/madd0/AzureStorageDriver/issues/22
