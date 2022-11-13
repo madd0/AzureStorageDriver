@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.0;netcoreapp3.1;net46</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1;net46</TargetFrameworks>
     <LangVersion>latest</LangVersion>
     <UseWpf>true</UseWpf>
     <AssemblyName>Madd0.AzureStorageDriver</AssemblyName>
@@ -10,14 +10,14 @@
 
   <PropertyGroup>
     <AssemblyTitle>AzureStorageDriver</AssemblyTitle>
-    <Description>A LINQPad driver to perform queries againt Azure Table Storage.</Description>
+    <Description>A LINQPad driver to perform queries against Azure Table Storage.</Description>
     <Company>madd0 (http://www.madd0.com)</Company>
     <Product>Azure Table Storage Driver</Product>
     <Title>Azure Table Storage Driver</Title>
     <Copyright>Copyright © 2012 Mauricio DIAZ ORLICH</Copyright>
-    <Version>2.1.1</Version>
-    <AssemblyVersion>2.1.1.0</AssemblyVersion>
-    <FileVersion>2.1.1.0</FileVersion>
+    <Version>2.1.2</Version>
+    <AssemblyVersion>2.1.2.0</AssemblyVersion>
+    <FileVersion>2.1.2.0</FileVersion>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/madd0/AzureStorageDriver</PackageProjectUrl>
     <RepositoryUrl>https://github.com/madd0/AzureStorageDriver.git</RepositoryUrl>
@@ -32,8 +32,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LINQPad.Reference" Version="1.1.0" />
-    <PackageReference Include="SonarAnalyzer.CSharp" Version="8.0.0.9566" />
+    <PackageReference Include="LINQPad.Reference" Version="1.*" />
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="8.*" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net46'">
@@ -49,9 +49,7 @@
     <PackageReference Include="Microsoft.Azure.Cosmos.Table">
       <Version>1.0.5</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp">
-      <Version>3.3.1</Version>
-    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.*" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net46'">
