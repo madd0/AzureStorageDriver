@@ -48,7 +48,7 @@
 
   <ItemGroup Condition="'$(TargetFramework)' != 'net46'">
     <PackageReference Include="Microsoft.Azure.Cosmos.Table">
-      <Version>1.0.5</Version>
+      <Version>1.0.8</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.*" />
   </ItemGroup>
