@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
     <TargetFrameworks>netcoreapp3.1;net46</TargetFrameworks>
     <LangVersion>latest</LangVersion>
@@ -33,7 +33,7 @@
 
   <ItemGroup>
     <PackageReference Include="LINQPad.Reference" Version="1.*" />
-    <PackageReference Include="SonarAnalyzer.CSharp" Version="8.*" />
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="9.*" />
     <PackageReference Include="Newtonsoft.Json" Version="13.*" />
   </ItemGroup>
 
