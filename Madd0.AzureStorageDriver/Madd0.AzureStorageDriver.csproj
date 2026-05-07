@@ -33,7 +33,7 @@
 
   <ItemGroup>
     <PackageReference Include="LINQPad.Reference" Version="1.*" />
-    <PackageReference Include="SonarAnalyzer.CSharp" Version="9.*" />
+    <PackageReference Include="SonarAnalyzer.CSharp" Version="10.*" />
     <PackageReference Include="Newtonsoft.Json" Version="13.*" />
   </ItemGroup>
 
